@@ -51,7 +51,7 @@ do
 #	extract read ID's from oak ridge .bam file
 ##############################################################################################################
         echo "> extracting read identifiers from oak ridge sam file"
-        samtools view "$OR_DIR/$in_file" | awk '{print $1}' | sort > "$OUT_DIR/$i.tmp.OR.junk"
+        samtools view "$OR_DIR/$in_file" | awk '{print $1}' | sort -u > "$OUT_DIR/$i.tmp.OR.junk"
 
 
 ##############################################################################################################

@@ -27,7 +27,7 @@ with open(INFILE) as f:
 		elif ((temp[0] == read_ID) and ("NM:i:0" in line)):
 			exact_match_count += 1
 			out.write(line)
-		else :
+		elif ((temp[0] != read_ID)) :
 			out.write(line)
 
 print(str(snp_count) + " MV snps removed")
