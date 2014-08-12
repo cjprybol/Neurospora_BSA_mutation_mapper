@@ -21,21 +21,14 @@ with open(INFILE) as f:
 	for line in f:
 		temp = line.split()
 		if len(temp) == 1:
-			duplicate = 1
 			read_ID = temp[0]
-		elif ((duplicate == 1) and (temp[0] == read_ID) and ("NM:i:0" not in line)):
+		elif ((temp[0] == read_ID) and ("NM:i:0" not in line)):
 			snp_count += 1
-			read_ID = ""
-			duplicate = 0
-		elif ((duplicate == 1) and (temp[0] == read_ID) and ("NM:i:0" in line)):
+		elif ((temp[0] == read_ID) and ("NM:i:0" in line)):
 			exact_match_count += 1
-			read_ID = ""
-			duplicate = 0
 			out.write(line)
-		elif duplicate == 0:
+		else :
 			out.write(line)
-		else:
-			print("unexpected scenario, check program logic")
 
 print(str(snp_count) + " MV snps removed")
 print(str(exact_match_count) + " exact matches untouched")
