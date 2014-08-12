@@ -1,0 +1,54 @@
+#/bin/bash
+
+# Author: Cameron Prybol
+# Created: 2014.07.25
+# Last Updated:
+# Description: create .bcf and .vcf files from .bam file
+
+#BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
+BASE="/lustre1/escratch1/cprybol1_Jul_30"
+FILES="$BASE"/KB_REGION_FILTERED_BAM/*.bam
+
+#########################################################
+#       if vcf output folder doesn't exist, make it
+########################################################
+
+if [ ! -d "$BASE/VCF_OUTPUT" ];
+        then
+                mkdir "$BASE/VCF_OUTPUT"
+                echo "> created directory $BASE/VCF_OUTPUT"
+fi
+
+################################################################
+#
+################################################################
+
+# determine number of files, used for creating readable output to user
+num_files=$(ls -1 "$BASE/KB_REGION_FILTERED_BAM" | grep "bam$" |  wc -l)
+
+i=1
+
+IN_DIR="$BASE/KB_REGION_FILTERED_BAM"
+OUT_VCF_DIR="$BASE/VCF_OUTPUT"
+REF_GENOME_DIR="$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge"
+
+for f in $FILES
+do
+        echo "> Processing file $i of $num_files"   
+
+        #remove the path prefix on the file name
+        in_file=${f##*/}
+        out_bcf=$(echo "$in_file" | sed -e 's/\.kb_region_filtered\.sorted\.bam/\.bcf/')
+        out=$(echo "$in_file" | sed -e 's/\.kb_region_filtered\.sorted\.bam//')
+
+        samtools mpileup -g -f "$REF_GENOME_DIR/neurospora_crassa_or74a_12_supercontigs.fasta" "$IN_DIR/$in_file" > "$OUT_VCF_DIR/$out_bcf"
+	
+	# filter out any values with quality less than 10 ( -10log_10 probability ) and snps in less than 80% of reads
+	#	(optimally desired snp will be in 100% of reads, but allow leniency for sequencing errors
+	/usr/local/vcftools/latest/bin/vcftools --bcf "$OUT_VCF_DIR/$out_bcf" --minQ 10 --non-ref-af 0.8 --out "$OUT_VCF_DIR/$out"
+	rm "$OUT_VCF_DIR/$out_bcf"
+	# created by vcf tools
+	rm "$OUT_VCF_DIR/$out.log"
+        let i=i+1
+done
+
