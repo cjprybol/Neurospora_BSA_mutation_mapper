@@ -85,7 +85,7 @@ do
 	rm "$OUT_DIR/$file_head.snpless_OR.Supercontig_12.*"
 	rm "$OUT_DIR/$file_head.original_OR.mpileup"
 	rm "$OUT_DIR/$file_head.snpless_OR.mpileup"
-	python3 04.2.filter_by_gff.py "$GFF" "$OUT_DIR/$file_head.mpilup.Supercontig_12."
+	python3 04.2.filter_by_gff.py "$GFF" "$OUT_DIR/$file_head.mpilup.Supercontig_12"
 	        COUNTER=1
         while [  $COUNTER -lt 8 ]; do
                 echo "$COUNTER"
