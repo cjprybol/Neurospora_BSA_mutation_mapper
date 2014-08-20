@@ -8,7 +8,7 @@
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
 BASE="/lustre1/escratch1/cprybol1_Jul_30"
-FILES="$BASE"/OR_MAP_BAM/*
+FILES="$BASE"/GFF_FILTERED_BAM_ORIGINAL/*
 
 #########################################################
 #	if output folder doesn't exist, make it
@@ -21,8 +21,8 @@ if [ ! -d "$BASE/MPILEUP" ];
 fi
 
 
-OR_DIR="$BASE/OR_MAP_BAM"
-SNPLESS_DIR="$BASE/OR_MINUS_MV_SNPS_BAM"
+OR_DIR="$BASE/GFF_FILTERED_BAM_ORIGINAL"
+SNPLESS_DIR="$BASE/GFF_FILTERED_BAM_SNPLESS"
 
 # determine number of files, used for creating readable output to user
 num_files=$(ls -1 "$OR_DIR" | wc -l)
@@ -41,7 +41,7 @@ do
 
 
 	in_file=${f##*/}
-	file_head=$(echo "$in_file" | sed -e 's/\.sorted\.bam//')
+	file_head=$(echo "$in_file" | sed -e 's/\.gff_filtered\.bam//')
 	or_file=$(ls -1 "$OR_DIR" | grep "$file_head")
 	snpless_file=$(ls -1 "$SNPLESS_DIR" | grep "$file_head")
 
@@ -49,7 +49,7 @@ do
 	if [[ "$echo $file_head" == lane3* ]];then
 		dir=$(echo "$file_head" | perl -pe 's/lane3-index([0-9]+)-[ACGT]{6}-.*/INDEX\1/')
 	else
-		dir=$(echo "$file_head" | perl -pe 's/(.*?)\.sorted\.bam/\1/' | tr "[a-z]" "[A-Z]")
+		dir=$(echo "$file_head" | perl -pe 's/(.*?)\.gff_filtered\.bam/\1/' | tr "[a-z]" "[A-Z]")
 	fi
 	
 	OUT_DIR="$OUT_BASE/$dir"
