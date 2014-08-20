@@ -80,10 +80,6 @@ do
 	done
 
 	python3 04.1.mpileup_div.py "$OUT_DIR/$file_head.original_OR" "$OUT_DIR/$file_head.snpless_OR" "$OUT_DIR/$file_head.mpilup"
-	rm "$OUT_DIR/$file_head.original_OR.Supercontig_12."*
-	rm "$OUT_DIR/$file_head.snpless_OR.Supercontig_12."*
-	rm "$OUT_DIR/$file_head.original_OR.mpileup"
-	rm "$OUT_DIR/$file_head.snpless_OR.mpileup"
 	python3 04.2.filter_by_gff.py "$GFF" "$OUT_DIR/$file_head.mpilup.Supercontig_12"
 	COUNTER=1
         while [  $COUNTER -lt 8 ]; do
@@ -95,3 +91,7 @@ do
         let i=i+1
 
 done
+	rm "$OUT_DIR/$file_head.original_OR.Supercontig_12."*
+	rm "$OUT_DIR/$file_head.snpless_OR.Supercontig_12."*
+	rm "$OUT_DIR/$file_head.original_OR.mpileup"
+	rm "$OUT_DIR/$file_head.snpless_OR.mpileup"
