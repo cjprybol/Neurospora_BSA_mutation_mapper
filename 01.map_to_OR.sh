@@ -44,11 +44,6 @@ do
 	file=${f##*/}
 	file_name=$(echo "$file" | sed -e 's/\.f\(q\|astq\)//')
 	echo "> Processing file $i of $num_files : $file"
-#	/usr/local/bwa/latest/bwa mem -a "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$f" > "$BAM_DIR/$i.out.sam" 
 	/usr/local/bwa/latest/bwa mem -a "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$f" | samtools view -buS - | samtools sort - "$BAM_DIR/$file_name.sorted"
-#	perl /usr/local/bwa/latest/xa2multi.pl "$BAM_DIR/$i.out.sam" > "$BAM_DIR/$i.xa2multi.sam"
-#	samtools view -buS "$BAM_DIR/$i.xa2multi.sam" | samtools sort - "$BAM_DIR/$file_name.trial.sorted"
-#	samtools view -buS "$BAM_DIR/$i.out.sam" | samtools sort - "$BAM_DIR/$file_name.sorted"
-#	rm "$i.out.sam"
 	let i=i+1
 done

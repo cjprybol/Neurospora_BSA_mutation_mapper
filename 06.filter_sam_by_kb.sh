@@ -7,7 +7,7 @@
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
 BASE="/lustre1/escratch1/cprybol1_Aug_22"
-FILES="$BASE"/GFF_FILTERED_BAM/lane3*
+FILES="$BASE"/BED_FILTERED_BAM/lane3*
 
 #########################################################
 #	if output folder doesn't exist, make it
@@ -20,7 +20,7 @@ if [ ! -d "$BASE/KB_REGION_FILTERED_BAM" ];
 fi
 
 
-IN_DIR="$BASE/GFF_FILTERED_BAM"
+IN_DIR="$BASE/BED_FILTERED_BAM"
 
 # determine number of files, used for creating readable output to user
 num_files=$(ls -1 "$IN_DIR" | grep "lane3" | wc -l)
@@ -35,9 +35,9 @@ do
 
 	echo "> Processing fileset $i of $num_files" 
 
-		#lane3-index01-ATCACG-CPx3.gff_filtered.bam
+		#lane3-index01-ATCACG-CPx3.bed_filtered.bam
 		in_file=${f##*/}
-		file_head=$(echo "$in_file" | sed -e 's/\.gff_filtered\.bam//')
+		file_head=$(echo "$in_file" | sed -e 's/\.bed_filtered\.bam//')
 		out_file="$file_head.kb_region_filtered"
 
 		#create temporary .sam file to read from
@@ -66,7 +66,7 @@ done
 
 # grab DIM_5.barcode prefix
 DIM_5_file=$(ls -1 "$IN_DIR" | grep "R1")
-DIM_5_pre=$(echo "$DIM_5_file" | sed -e 's/\.gff_filtered\.bam//')
+DIM_5_pre=$(echo "$DIM_5_file" | sed -e 's/\.bed_filtered\.bam//')
 
 echo "> Creating DIM_5 .sam file"
 
@@ -82,9 +82,9 @@ do
 
 	echo "> Creating DIM_5 filtered files based on filter sites for each sample: $i of $num_files" 
 
-		#lane3-index01-ATCACG-CPx3.gff_filtered.bam
+		#lane3-index01-ATCACG-CPx3.bed_filtered.bam
 		ref_file=${f##*/}
-		file_head=$(echo "$ref_file" | sed -e 's/\.gff_filtered\.bam//')
+		file_head=$(echo "$ref_file" | sed -e 's/\.bed_filtered\.bam//')
 
 		out_file="$DIM_5_pre.$file_head.kb_region_filtered"
 

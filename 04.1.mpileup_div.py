@@ -20,10 +20,12 @@ for i in range(1,8):
 ##################################################################################################################
 #	for each contig, for each position, determine count at position
 ##################################################################################################################
+
 for i in range(0,len(contig_list)):
 	OR_counts = []
 	current_pos = 1
 	f1_name = f1_pre + "." + contig_list[i]
+
 	with open(f1_name,'r') as f1:
 		for line in f1:
 			line = line.strip("\n")
@@ -31,6 +33,13 @@ for i in range(0,len(contig_list)):
 			while (current_pos < pos):	# fill in positions without values
 				OR_counts.append([current_pos,0])
 				current_pos += 1
+
+#			##################################	OLD
+#			count = 0
+#			if (line.split()[3] != ''):
+#				count = int(line.split()[3])
+#			##################################	OLD
+
 			count = int(line.split()[3])
 			OR_counts.append([pos,count])
 			current_pos += 1
@@ -40,6 +49,7 @@ for i in range(0,len(contig_list)):
 #	for each contig, for each position, determine count at position
 ##################################################################################################################
 	f2_name = f2_pre + "." + contig_list[i]
+
 	with open(f2_name,'r') as f2:
 		for line in f2:
 			line = line.strip("\n")
@@ -47,6 +57,14 @@ for i in range(0,len(contig_list)):
 			while (current_pos < pos):	# fill in positions without values
 				OR_counts[current_pos-1].append(0)
 				current_pos += 1
+
+
+#			##################################	OLD
+#			count = 0
+#			if (line.split()[3] != ''):
+#				count = int(line.split()[3])
+#			##################################	OLD
+
 			count = int(line.split()[3])
 			OR_counts[current_pos-1].append(count)
 			current_pos += 1
@@ -58,9 +76,14 @@ for i in range(0,len(contig_list)):
 ##################################################################################################################
 	for n in range(0,len(OR_counts)):
 		value = 0
-		if (OR_counts[n][1] > 0):
+		if (len(OR_counts[n]) == 3 and (OR_counts[n][1] > 0)):
 			value = OR_counts[n][2] / OR_counts[n][1]
+		elif (len(OR_counts[n]) == 2):	# if mpileup file 2 is shorter than mpileup file 1, then there will not be any value in OR_counts[n][2] for last positions
+			OR_counts[n].append(0)
+			if (OR_counts[n][1] > 0):
+				value = OR_counts[n][2] / OR_counts[n][1]
 		OR_counts[n].append(value)
+		
 		temp = contig_list[i]+"\t"+str(OR_counts[n][0])+"\t"+str(OR_counts[n][1])+"\t"+str(OR_counts[n][2])+"\t"+str(OR_counts[n][3])+"\n"
 		out.write(temp)
 	out.close()
