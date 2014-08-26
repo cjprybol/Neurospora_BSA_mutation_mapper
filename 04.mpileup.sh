@@ -68,30 +68,30 @@ do
 
 
 	#remove the path prefix on the file name
-	samtools mpileup -f "$REF_FASTA" "$OR_DIR/$or_file" > "$OUT_DIR/$file_head.original_OR.mpileup"
-	samtools mpileup -f "$REF_FASTA" "$SNPLESS_DIR/$snpless_file" > "$OUT_DIR/$file_head.snpless_OR.mpileup"
+#	samtools mpileup -f "$REF_FASTA" "$OR_DIR/$or_file" > "$OUT_DIR/$file_head.original_OR.mpileup"
+#	samtools mpileup -f "$REF_FASTA" "$SNPLESS_DIR/$snpless_file" > "$OUT_DIR/$file_head.snpless_OR.mpileup"
 	
 	COUNTER=1
-        while [  $COUNTER -lt 8 ]; do
+#        while [  $COUNTER -lt 8 ]; do
 #		echo "$COUNTER"
-		awk '$1 == "Supercontig_12.'$COUNTER'" {print $0}' "$OUT_DIR/$file_head.original_OR.mpileup" > "$OUT_DIR/$file_head.original_OR.Supercontig_12.$COUNTER"
-		awk '$1 == "Supercontig_12.'$COUNTER'" {print $0}' "$OUT_DIR/$file_head.snpless_OR.mpileup" > "$OUT_DIR/$file_head.snpless_OR.Supercontig_12.$COUNTER"
-		let COUNTER=COUNTER+1
-	done
+#		awk '$1 == "Supercontig_12.'$COUNTER'" {print $0}' "$OUT_DIR/$file_head.original_OR.mpileup" > "$OUT_DIR/$file_head.original_OR.Supercontig_12.$COUNTER"
+#		awk '$1 == "Supercontig_12.'$COUNTER'" {print $0}' "$OUT_DIR/$file_head.snpless_OR.mpileup" > "$OUT_DIR/$file_head.snpless_OR.Supercontig_12.$COUNTER"
+#		let COUNTER=COUNTER+1
+#	done
 
-	python3 04.1.mpileup_div.py "$OUT_DIR/$file_head.original_OR" "$OUT_DIR/$file_head.snpless_OR" "$OUT_DIR/$file_head.mpilup"
-	python3 04.2.filter_by_gff.py "$GFF" "$OUT_DIR/$file_head.mpilup.Supercontig_12"
+#	python3 04.1.mpileup_div.py "$OUT_DIR/$file_head.original_OR" "$OUT_DIR/$file_head.snpless_OR" "$OUT_DIR/$file_head.mpilup"
+#	python3 04.2.filter_by_gff.py "$GFF" "$OUT_DIR/$file_head.mpilup.Supercontig_12"
 	COUNTER=1
         while [  $COUNTER -lt 8 ]; do
                 echo "$COUNTER"
-		python3 04.3.bucket_count.py  "$OUT_DIR/$file_head.mpilup.Supercontig_12.$COUNTER"
+		python3 04.3.bucket_count.py  "$OUT_DIR/$file_head.mpilup.Supercontig_12.$COUNTER" 50000
                 let COUNTER=COUNTER+1
         done
 
         let i=i+1
 
 done
-	rm "$OUT_DIR/$file_head.original_OR.Supercontig_12."*
-	rm "$OUT_DIR/$file_head.snpless_OR.Supercontig_12."*
-	rm "$OUT_DIR/$file_head.original_OR.mpileup"
-	rm "$OUT_DIR/$file_head.snpless_OR.mpileup"
+#	rm "$OUT_DIR/$file_head.original_OR.Supercontig_12."*
+#	rm "$OUT_DIR/$file_head.snpless_OR.Supercontig_12."*
+#	rm "$OUT_DIR/$file_head.original_OR.mpileup"
+#	rm "$OUT_DIR/$file_head.snpless_OR.mpileup"
