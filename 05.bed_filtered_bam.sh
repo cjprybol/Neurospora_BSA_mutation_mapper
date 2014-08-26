@@ -6,7 +6,7 @@
 # Description: 
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
-BASE="/lustre1/escratch1/cprybol1_Jul_30"
+BASE="/lustre1/escratch1/cprybol1_Aug_22"
 FILES="$BASE"/OR_MINUS_MV_SNPS_BAM/*
 
 #########################################################
@@ -44,7 +44,7 @@ do
 	in_file=${f##*/}
 	out_file=$(echo "$in_file" | sed -e 's/\.minus_mv_snps.sorted.*/\.bed_filtered/')
 
-	bedtools intersect -v -a "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file"
+	/usr/local/bedtools/latest/bin/bedtools intersect -v -a "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file"
 
         let i=i+1
 
