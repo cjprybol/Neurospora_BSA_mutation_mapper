@@ -7,30 +7,30 @@
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
 BASE="/lustre1/escratch1/cprybol1_Jul_30"
-FILES="$BASE"/OR_MAP_BAM/*
+FILES="$BASE"/OR_MINUS_MV_SNPS_BAM/*
 
 #########################################################
 #	if output folder doesn't exist, make it
 ########################################################
 
-if [ ! -d "$BASE/GFF_FILTERED_BAM_ORIGINAL" ];
+if [ ! -d "$BASE/BED_FILTERED_BAM" ];
         then
-                mkdir "$BASE/GFF_FILTERED_BAM_ORIGINAL"
-                echo "> created directory $BASE/GFF_FILTERED_BAM_ORIGINAL"
+                mkdir "$BASE/BED_FILTERED_BAM"
+                echo "> created directory $BASE/BED_FILTERED_BAM"
 fi
 
 ##############################################################
 #	assign directory variable names
 ##############################################################
 
-IN_DIR="$BASE/OR_MAP_BAM"
+IN_DIR="$BASE/OR_MINUS_MV_SNPS_BAM"
 
 # determine number of files, used for creating readable output to user
 num_files=$(ls -1 "$IN_DIR" | wc -l)
 
 i=1
 
-OUT_DIR="$BASE/GFF_FILTERED_BAM_ORIGINAL"
+OUT_DIR="$BASE/BED_FILTERED_BAM"
 
 ###############################################################################################################
 #	
@@ -42,22 +42,9 @@ do
 
 	#remove the path prefix on the file name
 	in_file=${f##*/}
-	out_file=$(echo "$in_file" | sed -e 's/\.sorted.*/\.gff_filtered/')
+	out_file=$(echo "$in_file" | sed -e 's/\.minus_mv_snps.sorted.*/\.bed_filtered/')
 
-	#create a temporary .sam file, with un-mapped reads removed
-	samtools view -F 4 "$IN_DIR/$in_file" > "$OUT_DIR/$i.tmp.sam"
-
-	#run python script to remove all reads not in gff features
-	python3 05.sub_script.py "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_transcripts.gff3" \
-	"$OUT_DIR/$i.tmp.sam" "$OUT_DIR/$i.filtered.sam"
-	
-	rm "$OUT_DIR/$i.tmp.sam"
-
-	#convert filtered .sam to sorted .bam
-	samtools view -bT "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" \
-	"$OUT_DIR/$i.filtered.sam" | samtools sort - "$OUT_DIR/$out_file"
-
-	rm "$OUT_DIR/$i.filtered.sam"
+	bedtools intersect -v -a "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file"
 
         let i=i+1
 
