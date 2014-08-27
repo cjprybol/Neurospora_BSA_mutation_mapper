@@ -34,12 +34,6 @@ for i in range(0,len(contig_list)):
 				OR_counts.append([current_pos,0])
 				current_pos += 1
 
-#			##################################	OLD
-#			count = 0
-#			if (line.split()[3] != ''):
-#				count = int(line.split()[3])
-#			##################################	OLD
-
 			count = int(line.split()[3])
 			OR_counts.append([pos,count])
 			current_pos += 1
@@ -57,13 +51,6 @@ for i in range(0,len(contig_list)):
 			while (current_pos < pos):	# fill in positions without values
 				OR_counts[current_pos-1].append(0)
 				current_pos += 1
-
-
-#			##################################	OLD
-#			count = 0
-#			if (line.split()[3] != ''):
-#				count = int(line.split()[3])
-#			##################################	OLD
 
 			count = int(line.split()[3])
 			OR_counts[current_pos-1].append(count)
