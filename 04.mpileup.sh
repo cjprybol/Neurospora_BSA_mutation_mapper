@@ -8,7 +8,7 @@
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
 BASE="/lustre1/escratch1/cprybol1_Aug_22"
-FILES="$BASE"/GFF_FILTERED_BAM_ORIGINAL/*
+FILES="$BASE"/OR_MAP_BAM/*
 
 #########################################################
 #	if output folder doesn't exist, make it
@@ -21,8 +21,8 @@ if [ ! -d "$BASE/MPILEUP" ];
 fi
 
 
-OR_DIR="$BASE/GFF_FILTERED_BAM_ORIGINAL"
-SNPLESS_DIR="$BASE/GFF_FILTERED_BAM_SNPLESS"
+OR_DIR="$BASE/OR_MAP_BAM"
+SNPLESS_DIR="$BASE/OR_MINUS_MV_SNPS_BAM"
 
 # determine number of files, used for creating readable output to user
 num_files=$(ls -1 "$OR_DIR" | wc -l)
@@ -31,7 +31,6 @@ i=1
 
 OUT_BASE="$BASE/MPILEUP"
 REF_FASTA="$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta"
-GFF="$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_transcripts.gff3"
 
 for f in $FILES
 do
@@ -41,19 +40,13 @@ do
 
 
 	in_file=${f##*/}
-	file_head=$(echo "$in_file" | sed -e 's/\.gff_filtered\.bam//')
+	file_head=$(echo "$in_file" | sed -e 's/\.sorted\.bam//')
 	or_file=$(ls -1 "$OR_DIR" | grep "$file_head")
 	snpless_file=$(ls -1 "$SNPLESS_DIR" | grep "$file_head")
 
-	# account for variable naming for lane3 samples and provided parent strain fastq filenames
-	if [[ "$echo $file_head" == lane3* ]];then
-		dir=$(echo "$file_head" | perl -pe 's/lane3-index([0-9]+)-[ACGT]{6}-.*/INDEX\1/')
-	else
-		dir=$(echo "$file_head" | perl -pe 's/(.*?)\.gff_filtered\.bam/\1/' | tr "[a-z]" "[A-Z]")
-	fi
+	dir=$(echo "$file_head" | perl -pe 's/(.*?)\.sorted\.bam/\1/' | tr "[a-z]" "[A-Z]")
 	
 	OUT_DIR="$OUT_BASE/$dir"
-
 
 	#########################################################
 	#	if output folder doesn't exist, make it
@@ -79,18 +72,20 @@ do
 		let COUNTER=COUNTER+1
 	done
 
+	echo "04.1.mpileup_div.py"
 	python3 04.1.mpileup_div.py "$OUT_DIR/$file_head.original_OR" "$OUT_DIR/$file_head.snpless_OR" "$OUT_DIR/$file_head.mpilup"
-	COUNTER=1
+	        COUNTER=1
         while [  $COUNTER -lt 8 ]; do
-                echo "$COUNTER"
-		python3 04.3.bucket_count.py  "$OUT_DIR/$file_head.mpilup.Supercontig_12.$COUNTER" 1000
+		echo "04.3.bucket_count.py"
+		python3 04.3.bucket_count.py  "$OUT_DIR/$file_head.mpilup.Supercontig_12.$COUNTER"
                 let COUNTER=COUNTER+1
         done
 
-        let i=i+1
-
-done
 #	rm "$OUT_DIR/$file_head.original_OR.Supercontig_12."*
 #	rm "$OUT_DIR/$file_head.snpless_OR.Supercontig_12."*
 #	rm "$OUT_DIR/$file_head.original_OR.mpileup"
 #	rm "$OUT_DIR/$file_head.snpless_OR.mpileup"
+
+        let i=i+1
+
+done
