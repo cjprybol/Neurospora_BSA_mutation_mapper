@@ -6,7 +6,7 @@
 # Description: 
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
-BASE="/lustre1/escratch1/cprybol1_Aug_22"
+BASE="/lustre1/escratch1/cprybol1_Aug_28"
 FILES="$BASE"/OR_MINUS_MV_SNPS_BAM/*
 
 #########################################################

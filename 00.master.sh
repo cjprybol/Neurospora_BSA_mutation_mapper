@@ -6,7 +6,7 @@
 # Description: 
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
-BASE="/lustre1/escratch1/cprybol1_Aug_22"
+BASE="/lustre1/escratch1/cprybol1_Aug_28"
 FILES="$BASE/ESSENTIAL/SCRIPTS"
 
 "$FILES/01.map_to_OR.sh" & "$FILES/02.map_to_MV.sh" & wait
