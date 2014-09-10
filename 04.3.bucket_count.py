@@ -55,15 +55,12 @@ for i in range(0,5):
 		counts.append([(current_bucket * count) + 1 + offset,'0',records_read,records_skipped])
 
 counts.sort()
-for j in counts:
-	print(j)
 
-#	out = open(out_file,'w')
-#	
-#	
-#	for value in counts:
-#		output = '\t'.join(map(str, value)) + '\n'
-#		print(output.strip())
-#		out.write(output)
-#	
-#	out.close()
+out = open(out_file,'w')
+	
+for value in counts:
+	output = '\t'.join(map(str, value)) + '\n'
+	print(output.strip())
+	out.write(output)
+
+out.close()
