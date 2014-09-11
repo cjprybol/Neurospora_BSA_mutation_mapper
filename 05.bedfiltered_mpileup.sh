@@ -8,7 +8,7 @@
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
 BASE="/lustre1/escratch1/cprybol1_Aug_28"
-FILES="$BASE"/OR_MAP_BAM/*
+FILES="$BASE"/BED_FILTERED_BAM/*
 
 #########################################################
 #	if output folder doesn't exist, make it
@@ -21,8 +21,8 @@ if [ ! -d "$BASE/MPILEUP" ];
 fi
 
 
-OR_DIR="$BASE/OR_MAP_BAM"
-SNPLESS_DIR="$BASE/OR_MINUS_MV_SNPS_BAM"
+OR_DIR="$BASE/BED_FILTERED_BAM"
+SNPLESS_DIR="$BASE/BED_AND_SNP_FILTERED_BAM"
 
 # determine number of files, used for creating readable output to user
 num_files=$(ls -1 "$OR_DIR" | wc -l)
@@ -40,12 +40,13 @@ do
 
 
 	in_file=${f##*/}
-	file_head=$(echo "$in_file" | sed -e 's/\.sorted\.bam//')
+	file_head=$(echo "$in_file" | sed -e 's/\.bed_filtered\.bam//')
 	or_file=$(ls -1 "$OR_DIR" | grep "$file_head")
 	snpless_file=$(ls -1 "$SNPLESS_DIR" | grep "$file_head")
 
-	dir=$(echo "$file_head" | perl -pe 's/(.*?)\.sorted\.bam/\1/' | tr "[a-z]" "[A-Z]")
-	
+	dir=$(echo "$file_head" | tr "[a-z]" "[A-Z]")
+
+		
 	OUT_DIR="$OUT_BASE/$dir"
 
 	#########################################################
@@ -60,7 +61,7 @@ do
 
 
 
-	#remove the path prefix on the file name
+	#run mpileup to calculate the depth at each read position
 	samtools mpileup -f "$REF_FASTA" "$OR_DIR/$or_file" > "$OUT_DIR/$file_head.original_OR.mpileup"
 	samtools mpileup -f "$REF_FASTA" "$SNPLESS_DIR/$snpless_file" > "$OUT_DIR/$file_head.snpless_OR.mpileup"
 	
@@ -72,15 +73,15 @@ do
 		let COUNTER=COUNTER+1
 	done
 
-	echo "04.1.mpileup_div.py"
-	python3 04.1.mpileup_div.py "$OUT_DIR/$file_head.original_OR" "$OUT_DIR/$file_head.snpless_OR" "$OUT_DIR/$file_head.mpilup"
+	echo "05.1.mpileup_div.py"
+	python3 05.1.mpileup_div.py "$OUT_DIR/$file_head.original_OR" "$OUT_DIR/$file_head.snpless_OR" "$OUT_DIR/$file_head.mpilup"
 	        COUNTER=1
         while [  $COUNTER -lt 8 ]; do
-		echo "04.3.bucket_count.py"
-		python3 04.3.bucket_count.py  "$OUT_DIR/$file_head.mpilup.Supercontig_12.$COUNTER"
+		echo "05.2.bucket_count.py"
+		python3 05.2.bucket_count.py  "$OUT_DIR/$file_head.mpilup.Supercontig_12.$COUNTER"
                 let COUNTER=COUNTER+1
         done
-
+	
 #	rm "$OUT_DIR/$file_head.original_OR.Supercontig_12."*
 #	rm "$OUT_DIR/$file_head.snpless_OR.Supercontig_12."*
 #	rm "$OUT_DIR/$file_head.original_OR.mpileup"
