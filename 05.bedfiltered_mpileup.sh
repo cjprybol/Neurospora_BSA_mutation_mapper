@@ -7,7 +7,7 @@
 #		as well as the count files used to create plots in R
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
-BASE="/lustre1/escratch1/cprybol1_Aug_28"
+BASE="/escratch3/cprybol1/cprybol1_Sep_11"
 FILES="$BASE"/BED_FILTERED_BAM/*
 
 #########################################################

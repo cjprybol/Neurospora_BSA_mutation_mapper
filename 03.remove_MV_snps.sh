@@ -6,7 +6,7 @@
 # Description: creates oak ridge .bam files with mauriceville snps removed
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
-BASE="/lustre1/escratch1/cprybol1_Aug_28"
+BASE="/escratch3/cprybol1/cprybol1_Sep_11"
 FILES="$BASE"/MV_MAP_BAM/*
 
 #########################################################

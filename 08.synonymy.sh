@@ -7,7 +7,7 @@
 
 #BASE="/lustre1/escratch1/cprybol1_Jul_23/DIM5_SUPPRESSOR_PROJECT"
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
-BASE="/lustre1/escratch1/cprybol1_Aug_28"
+BASE="/escratch3/cprybol1/cprybol1_Sep_11"
 FILES="$BASE"/VCF_OUTPUT/lane3*
 
 #########################################################
