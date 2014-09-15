@@ -44,7 +44,10 @@ do
 	in_file=${f##*/}
 	out_file=$(echo "$in_file" | sed -e 's/\.sorted.*/\.bed_filtered/')
 
-	/usr/local/bedtools/latest/bin/bedtools intersect -v -abam "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file.bam"
+	/usr/local/bedtools/latest/bin/bedtools intersect -v -abam "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file.bam.tmp"
+	# filter out unmapped reads
+	samtools view -h -F 4 -b "$OUT_DIR/$out_file.bam.tmp" > "$OUT_DIR/$out_file.bam"
+	rm "$OUT_DIR/$out_file.bam.tmp"
 
         let i=i+1
 
@@ -88,7 +91,10 @@ do
 	in_file=${f##*/}
 	out_file=$(echo "$in_file" | sed -e 's/\.sorted.*/\.bed_filtered/')
 
-	/usr/local/bedtools/latest/bin/bedtools intersect -v -abam "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file.bam"
+	/usr/local/bedtools/latest/bin/bedtools intersect -v -abam "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file.bam.tmp"
+	# filter out unmapped reads
+	samtools view -h -F 4 -b "$OUT_DIR/$out_file.bam.tmp" > "$OUT_DIR/$out_file.bam"
+	rm "$OUT_DIR/$out_file.bam.tmp"
 
         let i=i+1
 
