@@ -7,7 +7,7 @@
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
 BASE="/escratch3/cprybol1/cprybol1_Sep_11"
-FILES="$BASE"/BED_FILTERED_BAM/lane3*
+FILES="$BASE"/BED_AND_SNP_FILTERED_BAM/lane3*
 
 #########################################################
 #	if output folder doesn't exist, make it
@@ -20,7 +20,7 @@ if [ ! -d "$BASE/KB_REGION_FILTERED_BAM" ];
 fi
 
 
-IN_DIR="$BASE/BED_FILTERED_BAM"
+IN_DIR="$BASE/BED_AND_SNP_FILTERED_BAM"
 
 # determine number of files, used for creating readable output to user
 num_files=$(ls -1 "$IN_DIR" | grep "lane3" | wc -l)
@@ -37,18 +37,20 @@ do
 
 		#lane3-index01-ATCACG-CPx3.bed_filtered.bam
 		in_file=${f##*/}
-		file_head=$(echo "$in_file" | sed -e 's/\.bed_filtered\.bam//')
+		file_head=$(echo "$in_file" | sed -e 's/\.minus_mv_snps\.bed_filtered\.bam//')
 		out_file="$file_head.kb_region_filtered"
 
-		#create temporary .sam file to read from
-		samtools view "$IN_DIR/$in_file" > "$OUT_DIR/$i.tmp.sam"
+		#create temporary .sam file to read from, skipping unmapped reads
+		samtools view -F 4 "$IN_DIR/$in_file" > "$OUT_DIR/$i.tmp.sam"
 
 		# assign filter list to variable
 		filter_list="$BASE/ESSENTIAL/FILTER_SITES/$file_head.filter_sites"
 
+		echo "$filter_list"
+
 		# filter the sam file
 		python3 06.filter.py "$OUT_DIR/$i.tmp.sam" "$filter_list" "$OUT_DIR/$out_file.sam"
-
+	
 		# convert sam file to .bam file
 		samtools view -bT "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$OUT_DIR/$out_file.sam" | samtools sort - "$OUT_DIR/$out_file.sorted"
 
@@ -66,12 +68,12 @@ done
 
 # grab DIM_5.barcode prefix
 DIM_5_file=$(ls -1 "$IN_DIR" | grep "R1")
-DIM_5_pre=$(echo "$DIM_5_file" | sed -e 's/\.bed_filtered\.bam//')
+DIM_5_pre=$(echo "$DIM_5_file" | sed -e 's/\.minus_mv_snps\.bed_filtered\.bam//')
 
 echo "> Creating DIM_5 .sam file"
 
-#create temporary .sam file to read from
-samtools view "$IN_DIR/$DIM_5_file" > "$OUT_DIR/DIM_5.tmp.sam"
+#create temporary .sam file to read from, skipping unmapped reads
+samtools view -F 4 "$IN_DIR/$DIM_5_file" > "$OUT_DIR/DIM_5.tmp.sam"
 
 
 i=1
@@ -84,7 +86,7 @@ do
 
 		#lane3-index01-ATCACG-CPx3.bed_filtered.bam
 		ref_file=${f##*/}
-		file_head=$(echo "$ref_file" | sed -e 's/\.bed_filtered\.bam//')
+		file_head=$(echo "$ref_file" | sed -e 's/\.minus_mv_snps\.bed_filtered\.bam//')
 
 		out_file="$DIM_5_pre.$file_head.kb_region_filtered"
 

@@ -27,7 +27,6 @@ filter_list = open(sys.argv[2],'r')
 out_file = open(sys.argv[3],'w')
 
 SC_locations = [[] for i in range(7)]
-#print(SC_locations)
 
 contig = ''
 for line in filter_list:
@@ -36,19 +35,28 @@ for line in filter_list:
 		contig = int(line.split(".")[1])
 	elif (len(line) != 0):
 		line=line.strip("\n")
+		# example: 1970-8117
 		start = int(line.split("-")[0])
 		end = int(line.split("-")[1])
-		for x in range(start,end+100,100):
+		for x in range(start,end+1):
 			SC_locations[contig-1].append(x)
-		
+
+
+empty = 1
+for supercontig in SC_locations:
+	if supercontig:
+		empty = 0
+	
+if (empty == 1):
+	print('filter file is empty, aborting this filter')
+	sys.exit()
 
 samfile = open(sys.argv[1],'r')
 for datum in samfile:
 	temp = datum.split()
 	kb = 0
 	if (len(temp[3]) > 3):
-		kb = temp[3][:-3]
-	kb = math.floor(int(kb)/100) * 100
+		kb = int(temp[3][:-3])
 	try:
 		if (int(temp[2].split(".")[1]) <= 7):
 			contig = int(temp[2].split(".")[1])
