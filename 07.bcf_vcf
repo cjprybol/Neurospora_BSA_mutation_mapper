@@ -58,8 +58,8 @@ do
 	#	DP4=Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases
 	bcftools filter -i '(%QUAL>10) && ((DP4[2]+DP4[3])/(DP4[0]+DP4[1]+DP4[2]+DP4[3]) >= 0.8)' "$OUT_VCF_DIR/$out_vcf.gz" > "$OUT_VCF_DIR/$out_vcf.filtered"
 	
+	rm "$OUT_VCF_DIR/$out_vcf.gz"
 	rm "$OUT_VCF_DIR/*.tbi"
 
         let i=i+1
 done
-
