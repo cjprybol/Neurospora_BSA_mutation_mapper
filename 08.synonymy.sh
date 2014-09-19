@@ -8,7 +8,7 @@
 #BASE="/lustre1/escratch1/cprybol1_Jul_23/DIM5_SUPPRESSOR_PROJECT"
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
 BASE="/escratch3/cprybol1/cprybol1_Sep_11"
-FILES="$BASE"/VCF_OUTPUT/lane3*
+FILES="$BASE"/VCF_OUTPUT/lane3*.filtered
 
 #########################################################
 #       
@@ -25,7 +25,7 @@ fi
 ################################################################
 
 # determine number of files, used for creating readable output to user
-num_files=$(ls -1 "$BASE/VCF_OUTPUT" | grep "^lane3" |  wc -l)
+num_files=$(ls -1 "$BASE/VCF_OUTPUT" | grep "^lane3*" |  grep "filtered" | wc -l)
 
 i=1
 
