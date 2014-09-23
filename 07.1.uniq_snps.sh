@@ -29,6 +29,7 @@ do
 	rm "$VCF_DIR/$i.uniq"
 	rm "$VCF_DIR/$i.header_less"
 	python3 "$BASE/ESSENTIAL/SCRIPTS/07.1.subscript.py" "$VCF_DIR/$i.sorted_with_duplicates" "$VCF_DIR/$out_file"
+	rm "$VCF_DIR/$i.sorted_with_duplicates"
 	
 
         let i=i+1
