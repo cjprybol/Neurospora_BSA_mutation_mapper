@@ -30,6 +30,7 @@ num_files=$(ls -1 "$BASE/VCF_OUTPUT" | grep "^lane3*" |  grep "filtered" | wc -l
 i=1
 
 IN_DIR="$BASE/VCF_OUTPUT"
+SAM_DIR="$BASE/KB_REGION_FILTERED_BAM"
 OUT_DIR="$BASE/SYNONYMY"
 REF_GENOME_DIR="$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge"
 GFF="$REF_GENOME_DIR/neurospora_crassa_or74a_12_transcripts.gff3"
@@ -41,11 +42,13 @@ do
 
         #remove the path prefix on the file name
         in_file=${f##*/}
-	DIM_5_file="R1.barcode10.$in_file"
-	file_head=$(echo "$in_file" | sed -e 's/\.vcf//')
-	out_file="$file_head.synonymy.out"
+	file_head=$(echo "$in_file" | sed -e 's/\.vcf\.filtered//')
+	out_file_base="$file_head.synonymy"
 
-	python3 08.synonymy.py "$GFF" "$TRANSCRIPT_FILE" "$IN_DIR/$in_file" "$IN_DIR/$DIM_5_file" "$OUT_DIR/$out_file"
+	# parse out SA chimeric reads
+#	samtools view "$SAM_DIR/$file_head.kb_region_filtered.sorted.bam" | grep "SA:Z:" > "$OUT_DIR/$file_head.chimeric.sam"
+
+	python3 08.synonymy.py "$GFF" "$TRANSCRIPT_FILE" "$IN_DIR/$file_head.unique" "$OUT_DIR/$out_file_base"
 
 
         let i=i+1

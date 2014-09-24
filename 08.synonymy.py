@@ -14,8 +14,7 @@ import difflib
 GFF = sys.argv[1]	# gff file
 TF = sys.argv[2]	# transcript file
 MUT_VCF = sys.argv[3]	# mutant vcf file
-DIM5_VCF = sys.argv[4]	# DIM5 vcf file
-OUT_FILE = sys.argv[5]
+OUT_FILE_BASE = sys.argv[4]
 DNA_codon_table = {
 #         T             C             A             G
 # T
@@ -53,14 +52,123 @@ revcom_codon_table = {
 def revcom(base):
 	return revcom_codon_table[base]
 
+
+###########################################################################################
+#	This section reads through the filtered VCF file and parses the contig, bp-position
+#	reference base and alternate base
+###########################################################################################
+
+mut_vcf_values = [ [] for i in range(7)]
+
+with open(MUT_VCF) as vcf_file:
+	for line in vcf_file:
+		line = line.strip("\n")
+		if line.startswith("Supercontig"):
+			values = line.split()
+			contig = int(values[0].split(".")[1])-1		# converted to base 0
+			pos = int(values[1])-1				# converted to base 0
+			ref = values[3]
+			alt = values[4]
+			extra_fields = values[7].split(';')
+			read_depth = ''
+			DP4 = ''
+			for field in extra_fields:
+				if field.startswith('DP='):
+					read_depth = field
+				elif field.startswith('DP4='):
+					DP4 = field
+			mut_vcf_values[contig].append( [ pos , ref , alt , read_depth, DP4] )
+	
+vcf_file.close()
+
+###########################################################################################
+#	Reads through supplied GFF file and extracts feature name, start site, stop site
+#	the CDS sequence, if it's on the forward strand, and the reading frame	
+###########################################################################################
+
+gene_list = [ [] for i in range(7)]
+	
+with open(GFF) as f:
+	next(f)			#skip over gff header line
+	current_gene = ''	# hold ID of current gene
+	current_index = ''	# hold ID of current gene
+	for line in f:
+		line = line.strip("\n")
+		values = line.split()
+
+		# establish a 2d array for each gene
+		if values[2] == 'gene':
+			contig = int(values[0].split(".")[1]) - 1	# use base 0
+			start = int(values[3])-1
+			stop = int(values[4])-1
+			parent = values[8].split(";")[0].split("=")[1]
+			current_gene = parent
+			gene_list[contig].append([parent,start,stop,[],[]])
+			current_index = len(gene_list[contig]) - 1
+
+		else:
+			feature_type = values[2]
+			contig = int(values[0].split(".")[1]) - 1	# use base 0
+			start = int(values[3])-1
+			stop = int(values[4])-1
+			parent = values[8].split(";")[1].split("=")[1][0:8]
+			strand = values[6]
+			frame = values[7]
+			if gene_list[contig][current_index][0] == parent:
+				gene_list[contig][current_index][3].append([feature_type,start,stop,strand,frame])
+			else:
+				print('error, attempting to write feature to incorrect parent gene')
+
+
+#############################################################################################
+#	run through each gene to find which ones contain VCF snps
+#############################################################################################
+
+filtered_gene_list = [ [] for i in range(7)]
+
+
+for i in range(0,7):
+	vcf_contig = mut_vcf_values[i]
+	if vcf_contig:	# check if any snps are in that contig, thus skipping contigs without any snps
+		gff_contig = gene_list[i]
+		#	for each gene, run through the vcf list and check to see if it has a snp located on it
+		#	if so, add it to the filtered_gene_list
+		for gene in gff_contig:
+			start = gene[1]
+			stop = gene[2]
+			contains_snp = 0
+			for snp in vcf_contig:
+				snp_start = snp[0]
+				snp_len = len(snp[1])
+				snp_stop = snp_start + snp_len
+				if ((start <= snp_start <= stop) or (start <= snp_stop <= stop)):
+					contains_snp = 1
+					gene[4].append(snp)
+			if contains_snp == 1:
+				filtered_gene_list[i].append(gene)
+
+#############################################################################################
+#       write list of effected genes to file
+#############################################################################################
+
+f_name = OUT_FILE_BASE + '.gene_list'
+f = open(f_name,'w')
+
+for contig in filtered_gene_list:
+	for gene in contig:
+		f.write(gene[0] + '\n')
+
+f.close()
+
+
+
 ######################################################################################################################
 #	This section reads through the transcript file and creates a hash directory for the program to use later
 #	in order to create mutant sequences from the original sequence
 ######################################################################################################################
 
-print("extracting sequences from supercontigs.fasta file...")
 with open(TF) as tf_file:
-	d = {}	# create an empty dictionary
+	d = []
 	CONTIG = ''
 	sequence = ''
 	for line in tf_file:
@@ -74,187 +182,75 @@ with open(TF) as tf_file:
 			#	the contents to the dictionary, then reset values
 			###########################################################################
 			if (CONTIG and sequence):
-				d[CONTIG] = sequence
-				CONTIG = ''
+				d.append([CONTIG,sequence])
 				sequence = ''
 
 			# >Supercontig_12.1 of Neurospora crassa OR74A
-			CONTIG = str(int(line.split()[0].split(".")[1])-1)	#make it zero based index
+			CONTIG = line.split()[0][1:]
 		# sequence data line
 		else:
 			sequence += line
 
 
 #need to write final values to dictionary
-d[CONTIG] = sequence
-
-###########################################################################################
-#	Reads through supplied GFF file and extracts feature name, start site, stop site
-#	the CDS sequence, if it's on the forward strand, and the reading frame	
-###########################################################################################
-
-print("extracting features from transcripts.gff file...")
-gff_CDS = [ [] for i in range(7)]
-gff_transcript = [ {} for i in range(7)]
-	
-with open(GFF) as f:
-	next(f)		#skip over gff header line
-	for line in f:
-		line = line.strip("\n")
-		values = line.split()
-		
-		# establish a dictionary for each mRNA transcript
-		if values[2] == "mRNA":
-			# ID=[NCU11405T0];Parent=NCU11405
-			parent = values[8].split(";")[0].split("=")[1]
-			contig = int(values[0].split(".")[1]) - 1
-			start = int(values[3])-1
-			stop = int(values[4])-1
-			gff_transcript[contig][parent] = [[start,stop]]
-
-
-
-		# only CDS regions have reading frame information, so extract all information to compare for synonymy
-		elif values[2] == "CDS":
-
-			#Supercontig_12.[1-7]
-			contig = int(values[0].split(".")[1]) - 1
-			start = int(values[3])-1
-			stop = int(values[4])-1
-			forward = 1
-			if (values[6] == '-'):
-				forward = 0
-			frame = values[7]
-			# ID=CDS:NCU11405T0:1;Parent=[NCU11405T0]
-			parent = values[8].split(";")[1].split("=")[1]
-			# ID=CDS:[NCU11405T0:1];Parent=NCU11405T0
-			name = values[8].split(";")[0].split("=")[1][4:]
-			full_contig = d[str(contig)]
-			CDS_seq = full_contig[start:stop+1]	# add 1 to include last character
-
-			if CDS_seq:
-				gff_CDS[contig].append( [ name , start , stop , CDS_seq , forward, frame] ) #[transcript_name] [start] [stop] [sequence] [strand]
-			else:
-				print("error",CDS_seq)
-
-		# for all other non-gene regions, just get start and stop to see if any SNPs are in them
-		elif values[2] != "gene":
-			# ID=[NCU11405T0];Parent=NCU11405
-			parent = values[8].split(";")[1].split("=")[1]
-			name = values[8].split(";")[0].split("=")[1]
-			contig = int(values[0].split(".")[1]) - 1
-			start = int(values[3])-1
-			stop = int(values[4])-1
-			gff_transcript[contig][parent].append([name,start,stop])
-
-
-f.close()
+d.append([CONTIG,sequence])
 
 
 ###########################################################################################
-#	This section reads through the VCF file for both the mutant and DIM5 strains
-#	and creates an organized list to read through later on
+#	assign each vcf to a sub-feature of the gene
 ###########################################################################################
 
-print("extracting snp data from mutant strain...")
-mut_vcf_values = [ [] for i in range(7)]
+snp_info = []
 
-with open(MUT_VCF) as vcf_file:
-	for line in vcf_file:
-		# data line
-		if line.startswith("Supercontig"):
-			line = line.strip("\n")
-			values = line.split()
-			contig = int(values[0].split(".")[1])-1
-			pos = int(values[1])-1
-			ref = values[3]
-			alt = values[4].split(",")
-			if 'X' in alt: alt.remove('X')	#remove the X base added by samtools mpileup
-			mut_vcf_values[contig].append( [ pos , ref , alt[0] ] )
-
-vcf_file.close()
-
-print("extracting snp data from dim5 strain...")
-dim5_vcf_values = [ [] for i in range(7)]
-
-with open(DIM5_VCF) as vcf_file:
-	for line in vcf_file:
-		# data line
-		if line.startswith("Supercontig"):
-			line = line.strip("\n")
-			values = line.split()
-			contig = int(values[0].split(".")[1])-1
-			pos = int(values[1])-1
-			ref = values[3]
-			alt = values[4].split(",")
-			if 'X' in alt: alt.remove('X')	#remove the X base added by samtools mpileup
-			dim5_vcf_values[contig].append( [ pos , ref , alt[0] ] )
-
-
-vcf_file.close()
-
-###########################################################################################
-#	assign SNPS to CDS regions to in order to evaluate synonymy across entire CDS region
-###########################################################################################
-
-cross_check_CDS = [ [] for i in range(7)]
-
-	
-print("matching SNPs to CDS regions...")
 for i in range(0,7):
-	current_contig = gff_CDS[i]
-	for CDS in current_contig:
-		#	gff_CDS[contig][#] = [ name , start , stop , CDS_seq , forward]
-		mut_SNPs = []
-		dim5_SNPs = []
-		for snp in mut_vcf_values[i]:
-			# if starts within the CDS, and ends within the CDS...
-			if ((CDS[1] <= snp[0] <= CDS[2]) and (CDS[1] <= (snp[0]+len(snp[1])) <= CDS[2])):
-				mut_SNPs.append(snp)
-		for snp in dim5_vcf_values[i]:
-			# if starts within the CDS, and ends within the CDS...
-			if ((CDS[1] <= snp[0] <= CDS[2]) and (CDS[1] <= (snp[0]+len(snp[1])) <= CDS[2])):
-				dim5_SNPs.append(snp)
-		if (len(mut_SNPs) != 0 or len(dim5_SNPs) != 0):	# don't waste time reading through SNP-less transcripts later on
-			cross_check_CDS[i].append([CDS,mut_SNPs,dim5_SNPs])
-CDS_count = 0
-for i in range(0,7):
-	CDS_count += len(cross_check_CDS[i])
-print("CDS_count :",CDS_count)
-
-#################################################
-#	feature not currently being used
-#################################################
-#	cross_check_features = [ [] for i in range(7)]
-#	
-#	print("matching SNPs to other gff features...")	
-#	for i in range(0,7):
-#		current_contig = gff_transcript[i]
-#		full_contig_set = list(current_contig.values())
-#		for parent_transcript in full_contig_set:
-#			for j in range(1,len(parent_transcript)):
-#				FEATURE = parent_transcript[j]
-#				mut_SNPs = []
-#				dim5_SNPs = []
-#				for snp in mut_vcf_values[i]:
-#					if (FEATURE[1] <= snp[0] <= FEATURE[2]):
-#						mut_SNPs.append(snp)
-#				for snp in dim5_vcf_values[i]:
-#					if (FEATURE[1] <= snp[0] <= FEATURE[2]):
-#						dim5_SNPs.append(snp)
-#				if (len(mut_SNPs) != 0 or len(dim5_SNPs) != 0):	# don't waste time reading through SNP-less transcripts later on
-#					cross_check_features[i].append([FEATURE,mut_SNPs,dim5_SNPs])
-#	
-#	feature_count = 0
-#	for i in range(0,7):
-#		feature_count += len(cross_check_features[i])
-#	print("feature_count :",feature_count)
-#################################################
-#	end feature
-#################################################
+	contig = filtered_gene_list[i]
+	if contig:
+		for gene in contig:
+			parent = gene[0]
+			sub_feature_list = gene[3]
+			snp_list = gene[4]
+			for snp in snp_list:
+				snp_start = snp[0]
+				snp_len = len(snp[1])
+				snp_stop = snp_start + snp_len
+				matching_sub_features = []
+				for feature in sub_feature_list:
+					start = feature[1]
+					stop = feature[2]
+					if (((start <= snp_start <= stop) or (start <= snp_stop <= stop)) and feature[0]!='mRNA'):
+						matching_sub_features.append(feature)
+				info = snp
+				info.append(parent)
+				info.append('Supercontig=' + str(i+1))
+				info.append(matching_sub_features)
+				snp_info.append(info)
 
 
+# left off here: need to write this below to an outfile, and then also flip the structure around to be based on CDS's so that I can translate
+#	all of the CDS's to check for synonymy
 
+
+#######################
+#	write this out to a file!!
+######################
+
+for snp in snp_info:
+	print(snp)
+
+########################################################################################################################
+#	translate each CDS region to check for synonymy
+########################################################################################################################
+
+CDS_list = []
+
+# step 1: flip data structure around to have snps listed by CDS, instead of CDSs listed by snp
+for snp in snp_info:
+	for feature in snp[7]:
+		if feature[0] == 'CDS':
+			
+			
+						
+sys.exit()
 
 ###########################################################################################
 #	sub mutant SNPs for original sequence, and check for synonymy
