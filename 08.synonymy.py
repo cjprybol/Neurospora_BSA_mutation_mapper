@@ -219,6 +219,8 @@ for i in range(0,7):
 					stop = feature[2]
 					if (((start <= snp_start <= stop) or (start <= snp_stop <= stop)) and feature[0]!='mRNA'):
 						matching_sub_features.append(feature)
+				if not matching_sub_features:
+					matching_sub_features.append('intron')
 				info = snp
 				info.append(parent)
 				info.append('Supercontig=' + str(i+1))
@@ -226,16 +228,20 @@ for i in range(0,7):
 				snp_info.append(info)
 
 
-# left off here: need to write this below to an outfile, and then also flip the structure around to be based on CDS's so that I can translate
-#	all of the CDS's to check for synonymy
-
-
-#######################
-#	write this out to a file!!
-######################
+f_name = OUT_FILE_BASE + '.snp_mapping'
+f = open(f_name,'w')
 
 for snp in snp_info:
-	print(snp)
+	features = []
+	for feat in snp[7]:
+		if ((feat[0] != 'exon') and (feat != 'intron')): 
+			features.append(' '.join(list(map(str, feat))))
+		if (feat == 'intron'):
+			features.append(feat)
+	temp = '\t'.join(list(map(str, snp[0:7]))) + '\t' + '\t'.join(list(map(str, features)))
+	f.write(temp + '\n')
+
+f.close()
 
 ########################################################################################################################
 #	translate each CDS region to check for synonymy
@@ -243,270 +249,82 @@ for snp in snp_info:
 
 CDS_list = []
 
+f_name = OUT_FILE_BASE + '.translations'
+f = open(f_name,'w')
+
 # step 1: flip data structure around to have snps listed by CDS, instead of CDSs listed by snp
 for snp in snp_info:
 	for feature in snp[7]:
 		if feature[0] == 'CDS':
+			present = 0
+			index = ''
+			for cds in CDS_list:
+				if cds[0] == feature:
+					present = 1
+					index = CDS_list.index(cds)
+			if present == 0:
+				CDS_list.append([feature, [] ])
+				index = len(CDS_list) - 1
+			CDS_list[index][1].append(snp[0:7])
+
+# step 2: obtain sequence for the CDS
+for cds in CDS_list:
+	contig = int(cds[1][0][6].split('=')[1])-1	# convert to base 0
+	start =  cds[0][1]
+	stop =  cds[0][2]
+	forward = 1
+	if cds[0][3] == '-':
+		forward = 0
+	phase = int(cds[0][4])
+	seq = d[contig][1][start:stop+1]	# add +1 to include final base
+
+# step 3: process snps to create mutant DNA, if reverse, reverse complement the DNA, and shift my phase
+	mut_seq = ''
+	for snp in reversed(cds[1]):
+		pos = snp[0]
+		off_set = pos - start
+		mut_seq = seq[:off_set] + snp[2] + seq[off_set+len(snp[1]):]
+	
+	###### test to assure correct replacement (it works!) ##############
+#		print(seq[off_set-2:off_set+len(snp[1])+2], mut_seq[off_set-2:off_set+len(snp[2])+2], snp[1], snp[2],sep='\t')
+	
+	if forward == 0:
+		seq = seq[::-1]
+		temp = ''
+		for i in seq:
+			temp += revcom(i)
+		seq = temp
+		mut_seq = mut_seq[::-1]
+		temp = ''
+		for i in mut_seq:
+			temp += revcom(i)
+		mut_seq = temp
+	seq = seq[phase:]
+	mut_seq = mut_seq[phase:]
+
+# step 4: translate and check if AA sequenes are synonymous
+	ref_AA = ''
+	mut_AA = ''
+	for i in range(0,(len(seq)//3)*3,3):
+		try:
+			ref_AA += translate_DNA_codon(seq[i:i+3])
+		except:
+			print('failed to transate')
+	for i in range(0,(len(mut_seq)//3)*3,3):
+		try:
+			mut_AA += translate_DNA_codon(mut_seq[i:i+3])
+		except:
+			print('failed to transate')
+	if (ref_AA != mut_AA):
+		text = [cds[1][0][5], cds[0][1], cds[0][2], cds[0][3], cds[0][4], ':']
+		text = ' '.join(list(map(str,text)))
+		f.write(text + '\n')
+		for line in (difflib.Differ().compare(ref_AA.splitlines(1),mut_AA.splitlines(1))):
+			f.write(line + '\n')
+	else:
+		text = [cds[1][0][5], cds[0][1], cds[0][2], cds[0][3], cds[0][4], ':', 'synonymous']
+		text = ' '.join(list(map(str,text)))
+		f.write(text + '\n')
 			
-			
-						
-sys.exit()
-
-###########################################################################################
-#	sub mutant SNPs for original sequence, and check for synonymy
-###########################################################################################
-
-#for contig in cross_check_CDS:
-print("translating DNA sequences to check for snyonymy...")
-#keep track of how many times mpileup reference DOES NOT match user determined reference
-conflicts = 0
-#keep track of how many times mpileup reference DOES match user determined reference
-matches = 0
-non_syn_snps = [ [ [] , [] , [] , [] ] for i in range(0,7)]
-
-#for each contig 1-7 (offset by 1 to 0-6)
-for n in range(0,7):
-	#assign that contig to a variable, CDS_contig
-	CDS_contig = cross_check_CDS[n]
-	# for each GFF CDS feature on that contig
-	for FEATURE in CDS_contig:
-		mutant_synonymy = 'T'	# assume all SNPs are synonymous
-		dim5_synonymy = 'T'	# assume all SNPs are synonymous
-		#create a list in the form [feature and all it's details , mutant non-syn snps , dim5 non-syn snps]
-		non_syn_feats = [ FEATURE[0] , [] , [] ]
-		# take reference sequence from feature details
-		reference_seq = FEATURE[0][3]
-		# take reading frame from reference details
-		frame = int(FEATURE[0][5])
-
-
-		####################################################################################
-		#	mutant
-		####################################################################################
-		# create variable to hold the mutant sequence as we build it
-		mutant_seq = reference_seq
-		# variable to hold the last stop position (start at 0)
-		prior_stop = 0
-		# figure out the number of mutant SNPs in this feature to evaluate
-		snp_count = len(FEATURE[1])
-		# variable to hold sequence AFTER point mutation
-		post = ''
-		# variable to keep track of length change due to indels
-		offset = 0
-		# for each snp in the feature set...
-		for q in range(0,snp_count): 
-			# assign the snp and it's details to a variable
-			snp = FEATURE[1][q]
-			# feature start site
-			start = FEATURE[0][1]
-			# figure out position of snp relative to CDS start site
-			pos = snp[0] - start
-			# assign the reference base to a variable
-			ref_snp = snp[1]
-			# assign mpileup determined mutant snp to variable
-			mutant_snp = snp[2]
-
-
-			# TEST#
-			if (ref_snp != mutant_seq[pos+offset:pos+offset+len(ref_snp)]):
-				conflicts += 1
-			else:
-				matches+=1
-			# END TEST #
-
-
-			# determine the sequence up until the point of mutation
-			pre = mutant_seq[0:pos+offset]			#draws from mut_seq to keep changes
-			# determine all sequence that should occur after the mutation
-			# making sure to draw from the reference sequence
-			post = reference_seq[pos+len(ref_snp):]
-			#create mutant sequence from parts
-			mutant_seq = pre + mutant_snp + post
-			# keep track of length change due to indels
-			offset += len(mutant_snp) - len(ref_snp)
-			
-		# if 'forward' if 0 (false), then need to make revcom of sequence because its on
-		#	the reverse strand
-		if FEATURE[0][4] == 0:
-			temp = reference_seq[::-1]
-			reference_seq = ''
-			for base in temp:
-				reference_seq += revcom(base)
-			temp = mutant_seq[::-1]
-			mutant_seq = ''
-			for base in temp:
-				mutant_seq += revcom(base)
-			
-		# translate reference and mutant AA sequences to see if synonymous
-		reference_AA = ''
-		mutant_AA = ''
-		for i in range(frame,int(len(reference_seq)/3)+1,3):
-			reference_AA += translate_DNA_codon(reference_seq[i:i+3])
-		for i in range(frame,int(len(mutant_seq)/3)+1,3):
-			try:
-				mutant_AA += translate_DNA_codon(mutant_seq[i:i+3])
-			except:
-				print("fail",mutant_seq[i:i+3])
-		if reference_AA != mutant_AA:
-			mutant_synonymy = 0
-			snp_list = FEATURE[1]
-			non_synonymous_snp_set = [snp_list,reference_AA,mutant_AA,mutant_seq]
-			non_syn_feats[1] = non_synonymous_snp_set
-
-
-
-
-		####################################################################################
-		#	DIM 5
-		####################################################################################
-		# create variable to hold the DIM_5 sequence as we build it
-		DIM_5_seq = reference_seq
-		# variable to hold the last stop position (start at 0)
-		prior_stop = 0
-		# figure out the number of DIM_5 SNPs in this feature to evaluate
-		snp_count = len(FEATURE[2])
-		# variable to hold sequence AFTER point mutation
-		post = ''
-		# variable to keep track of length change due to indels
-		offset = 0
-		# for each snp in the feature set...
-		for q in range(0,snp_count): 
-			# assign the snp and it's details to a variable
-			snp = FEATURE[2][q]
-			# feature start site
-			start = FEATURE[0][1]
-			# figure out position of snp relative to CDS start site
-			pos = snp[0] - start
-			# assign the reference base to a variable
-			ref_snp = snp[1]
-			# assign mpileup determined DIM_5 snp to variable
-			DIM_5_snp = snp[2]
-
-
-			# TEST#
-			if (ref_snp != DIM_5_seq[pos+offset:pos+offset+len(ref_snp)]):
-				conflicts += 1
-			else:
-				matches+=1
-			# END TEST #
-
-
-			# determine the sequence up until the point of mutation
-			pre = DIM_5_seq[0:pos+offset]			#draws from mut_seq to keep changes
-			# determine all sequence that should occur after the mutation
-			# making sure to draw from the reference sequence
-			post = reference_seq[pos+len(ref_snp):]
-			#create DIM_5 sequence from parts
-			DIM_5_seq = pre + DIM_5_snp + post
-			# keep track of length change due to indels
-			offset += len(DIM_5_snp) - len(ref_snp)
-			
-
-		# if 'forward' if 0 (false), then need to make revcom of sequence because its on
-		#	the reverse strand
-		if FEATURE[0][4] == 0:
-			temp = reference_seq[::-1]
-			reference_seq = ''
-			for base in temp:
-				reference_seq += revcom(base)
-			temp = DIM_5_seq[::-1]
-			DIM_5_seq = ''
-			for base in temp:
-				DIM_5_seq += revcom(base)
-			
-		# translate reference and DIM_5 AA sequences to see if synonymous
-		reference_AA = ''
-		DIM_5_AA = ''
-		for i in range(frame,int(len(reference_seq)/3)+1,3):
-			reference_AA += translate_DNA_codon(reference_seq[i:i+3])
-		for i in range(frame,int(len(DIM_5_seq)/3)+1,3):
-			try:
-				DIM_5_AA += translate_DNA_codon(DIM_5_seq[i:i+3])
-			except:
-				print("fail",DIM_5_seq[i:i+3])
-		if reference_AA != DIM_5_AA:
-			dim5_synonymy = 0
-			snp_list = FEATURE[2]
-			non_synonymous_snp_set = [snp_list,reference_AA,DIM_5_AA,DIM_5_seq]
-			non_syn_feats[2] = non_synonymous_snp_set
-
-		# assign feature to one of four possible groups, based on synonymy
-		#	of both mutant sequence and the DIM5 sequence
-		if mutant_synonymy == 'T' and dim5_synonymy == 'T':
-			non_syn_snps[n][0].append(non_syn_feats)
-		elif mutant_synonymy == 0 and dim5_synonymy == 'T':
-			non_syn_snps[n][1].append(non_syn_feats)
-		# if the DIM_5 strain and mutant strain are both non-synonymous with the reference, yet also non-synonymous with eachother, then
-		#	include in the new mutation set
-		elif (mutant_synonymy == 0 and dim5_synonymy == 0 and (non_syn_feats[2][1] != non_syn_feats[2][2])):
-			non_syn_snps[n][1].append(non_syn_feats)
-#			print(non_syn_feats[2][1],non_syn_feats[2][2],"are not equivalent",sep="\n")
-		# if the DIM_5 strain and mutant strain are both non-synonymous with the reference, yet still synonymous with eachother
-		#	then this non-synonymous CDS is not the cause of the mutation
-		elif (mutant_synonymy == 0 and dim5_synonymy == 0 and (non_syn_feats[2][1] == non_syn_feats[2][2])):
-			non_syn_snps[n][2].append(non_syn_feats)
-#			print(non_syn_feats[2][1],non_syn_feats[2][2],"are equivalent",sep="\n")
-		else:
-			non_syn_snps[n][3].append(non_syn_feats)
-			
-
-
-#########################################################################################
-#	results and output
-#########################################################################################
-synonymous = 0
-partial = 0
-non = 0
-revert = 0
-for contig in non_syn_snps:
-	synonymous += len(contig[0])	
-	partial += len(contig[1])	
-	non += len(contig[2])	
-	revert += len(contig[3])
-print()
-print("RESULTS")
-print("synonymous with reference :",synonymous,"new mutation :",partial,"same mutation as DIM_5 parent :",non,"revert from DIM_5 mutation back to reference :",revert, sep="\t")
-print()		
-
-with open(OUT_FILE,'w') as out:
-	for n in range(0,7):
-		out.write("Supercontig 12."+str(n+1)+"\n")
-		if (len(non_syn_snps[n][1]) > 0):
-			out.write("NEW_MUTATION"+"\n")
-			new_mutation_set = non_syn_snps[n][1]
-			for feature in new_mutation_set:
-				insertion_count = 0
-				deletion_count = 0
-				snp_count = 0
-				feature_name = feature[0][0]
-				snp_list = feature[1][0]
-				ref_AA = feature[1][1]
-				mutant_AA = feature[1][2]
-				out.write(feature_name+"\n")
-				for snp in snp_list:
-					out.write("\t".join(map(str,snp)) + "\n")
-					if (len(snp[1]) == len(snp[2])):
-						snp_count += 1
-					elif (len(snp[1]) < len(snp[2])):
-						insertion_count += 1
-					if (len(snp[1]) > len(snp[2])):
-						deletion_count += 1
-				for line in (difflib.Differ().compare(ref_AA.splitlines(1),mutant_AA.splitlines(1))):
-					out.write(line.strip('\n')+"\n")
-				if ("-" in mutant_AA):
-					out.write('snps:'+"\t"+str(snp_count)+"\t"+'insertions:'+"\t"+str(insertion_count)+"\t"+'deletions:'+"\t"+str(deletion_count)+"\t"+'STOP'+"\t"+"\n")
-				else:
-					out.write('snps:'+"\t"+str(snp_count)+"\t"+'insertions:'+"\t"+str(insertion_count)+"\t"+'deletions:'+"\t"+str(deletion_count)+"\t"+"\n")
-				out.write("\n")
-		else:
-			out.write('null'+"\n")
-
-out.close()
-
-print()
-print('mpileup reference and user calculated reference sequence agreement:')
-print('matches',matches)
-print('conflicts',conflicts)
-print(str(conflicts/(matches+conflicts)*100),'% error rate')
-
+f.close()
 sys.exit()
