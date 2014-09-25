@@ -48,7 +48,13 @@ do
 	# parse out SA chimeric reads
 #	samtools view "$SAM_DIR/$file_head.kb_region_filtered.sorted.bam" | grep "SA:Z:" > "$OUT_DIR/$file_head.chimeric.sam"
 
-	python3 08.synonymy.py "$GFF" "$TRANSCRIPT_FILE" "$IN_DIR/$file_head.unique" "$OUT_DIR/$out_file_base"
+#	python3 08.synonymy.py "$GFF" "$TRANSCRIPT_FILE" "$IN_DIR/$file_head.unique" "$OUT_DIR/$out_file_base"
+
+#	samtools view "$SAM_DIR/$file_head.kb_region_filtered.sorted.bam" | grep 'SA:Z:' > "$OUT_DIR/$file_head.tmp.sam"
+
+	filter_list="$BASE/ESSENTIAL/FILTER_SITES/$file_head.filter_sites"
+
+	python3 08.SA_chimeric_read_mapping.py "$GFF" "$OUT_DIR/$file_head.tmp.sam" "$filter_list" "$OUT_DIR/$out_file_base"
 
 
         let i=i+1
