@@ -45,16 +45,19 @@ do
 	file_head=$(echo "$in_file" | sed -e 's/\.vcf\.filtered//')
 	out_file_base="$file_head.synonymy"
 
+
+	echo "matching VCF locations to genes and translating for synonymy..."
+	python3 08.synonymy.py "$GFF" "$TRANSCRIPT_FILE" "$IN_DIR/$file_head.unique" "$OUT_DIR/$out_file_base"
+
 	# parse out SA chimeric reads
-#	samtools view "$SAM_DIR/$file_head.kb_region_filtered.sorted.bam" | grep "SA:Z:" > "$OUT_DIR/$file_head.chimeric.sam"
-
-#	python3 08.synonymy.py "$GFF" "$TRANSCRIPT_FILE" "$IN_DIR/$file_head.unique" "$OUT_DIR/$out_file_base"
-
-#	samtools view "$SAM_DIR/$file_head.kb_region_filtered.sorted.bam" | grep 'SA:Z:' > "$OUT_DIR/$file_head.tmp.sam"
+	samtools view "$SAM_DIR/$file_head.kb_region_filtered.sorted.bam" | grep 'SA:Z:' > "$OUT_DIR/$file_head.tmp.sam"
 
 	filter_list="$BASE/ESSENTIAL/FILTER_SITES/$file_head.filter_sites"
 
+	echo "extracting SA chimeric reads in windows of interest"
 	python3 08.SA_chimeric_read_mapping.py "$GFF" "$OUT_DIR/$file_head.tmp.sam" "$filter_list" "$OUT_DIR/$out_file_base"
+
+	rm "$OUT_DIR/$file_head.tmp.sam"
 
 
         let i=i+1

@@ -1,0 +1,16 @@
+# sequencing files
+*.fastq
+*.fq
+
+# heterochromatin files
+*.bed
+
+# reference genomes
+*.fasta
+# index files for reference genomes
+*.fasta*
+
+# folders
+HETEROCHROMATIN/
+MERGED_FASTQ/
+REF_GENOMES/

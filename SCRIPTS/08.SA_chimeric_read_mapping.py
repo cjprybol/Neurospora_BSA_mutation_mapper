@@ -16,7 +16,7 @@ OUT_FILE_BASE = sys.argv[4]
 
 ###########################################################################################
 #	Reads through supplied GFF file and extracts feature name, start site, stop site
-#	the CDS sequence, if it's on the forward strand, and the reading frame	
+#	the CDS sequence, if it's on the forward strand, and the reading frame
 ###########################################################################################
 
 gene_list = [ [] for i in range(7)]
@@ -72,6 +72,7 @@ with open(SAM) as f:
 		for value in values:
 			if value.startswith('SA:Z:'):
 				SA = value[5:-1].split(',')[0:3]
+		name = values[0]
 		contig1 = int(values[2].split('.')[1])-1	# use 0-base index
 		start1 = int(values[3]) - 1		# use 0-base index
 		stop1 = start1 + len(values[9])
@@ -87,9 +88,9 @@ with open(SAM) as f:
 			print('error')
 		# correct for SA's that map to one of the extra contigs
 		if (contig1 < 7):
-			SA_info[contig1].append([start1,stop1,read])
+			SA_info[contig1].append([start1,stop1,read,name])
 		if (contig2 < 7):
-			SA_info[contig2].append([start2,stop2,read,SA[2]])
+			SA_info[contig2].append([start2,stop2,read,SA[2],name])
 
 
 
@@ -119,25 +120,8 @@ for i in range(0,7):
 			if contains_SA == 1:
 				filtered_gene_list[i].append(gene)
 
-#	for contig in filtered_gene_list:
-#		for gene in contig:
-#			print(gene)
-
-#############################################################################################
-#       write list of effected genes to file
-#############################################################################################
-
-#	f_name = OUT_FILE_BASE + '.gene_list'
-#	f = open(f_name,'w')
-#	
-#	for contig in filtered_gene_list:
-#		for gene in contig:
-#			f.write(gene[0] + '\n')
-#	
-#	f.close()
-
 ###########################################################################################
-#	assign each vcf to a sub-feature of the gene
+#	assign each sa-read to a sub-feature of the gene
 ###########################################################################################
 
 SA_mapping = []
@@ -162,7 +146,9 @@ for i in range(0,7):
 						matching_sub_features.append(feature)
 				if not matching_sub_features:
 					matching_sub_features.append('intron')
+#				print(SA)
 				info = SA[0:3]
+				info.append(SA[-1])
 				info.append(parent)
 				info.append('Supercontig=' + str(i+1))
 				info.append(gene_start)
@@ -196,22 +182,40 @@ for line in filter_list:
 
 filtered_SA_list = []
 
-print(len(SA_mapping))
+#print(len(SA_mapping),'reads in genes')
 
 for sa in SA_mapping:
-	data = [sa[3],sa[4],sa[5],sa[6]]
-	for i in sa[7]:
+#	print(sa)
+	data = [sa[3],sa[0],sa[4],sa[5]]
+	for i in sa[8]:
 		if (i != 'intron'):
 			temp = ' '.join(map(str,i[0:3]))
 		else:
 			temp = i
 		data.append(temp)
-	contig = int(data[1].split('=')[1]) - 1 # base 0
-	start = int(data[2]/1000)
-	stop = int(data[3]/1000)
+	contig = int(sa[5].split('=')[1]) - 1 # base 0
+	start = int(sa[6]/1000)
+	stop = int(sa[7]/1000)
 	if ((start in SC_locations[contig]) or (stop in SC_locations[contig])):
 		filtered_SA_list.append(data)
 
-print(len(filtered_SA_list))
+set_list = []
 for SA in filtered_SA_list:
-	print(SA[0])
+	temp = '\t'.join(map(str,SA))
+	set_list.append(temp)
+
+set_list = list(set(set_list))
+
+set_list.sort()
+current_read = ''
+f_name = OUT_FILE_BASE + '.SA_list'
+f = open(f_name,'w')
+for set in set_list:
+	if (current_read and (current_read != set.split()[0])):
+		f.write('\n')
+		current_read = set.split()[0]
+	else:
+		current_read = set.split()[0]
+	f.write(set + '\n')
+
+f.close()
