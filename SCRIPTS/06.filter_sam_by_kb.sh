@@ -6,7 +6,7 @@
 # Description: creates new .sam files based on user specified kb-windows derived from the snp graphs
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
-BASE="/escratch3/cprybol1/cprybol1_Sep_11"
+BASE="/escratch4/cprybol1/cprybol1_Nov_19"
 FILES="$BASE"/BED_AND_SNP_FILTERED_BAM/lane3*
 
 #########################################################

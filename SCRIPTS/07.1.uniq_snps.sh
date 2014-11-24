@@ -6,7 +6,7 @@
 # Description: create .bcf and .vcf files from .bam file
 
 #BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
-BASE="/escratch3/cprybol1/cprybol1_Sep_11"
+BASE="/escratch4/cprybol1/cprybol1_Nov_19"
 FILES="$BASE"/VCF_OUTPUT/lane3*.filtered
 
 i=1
