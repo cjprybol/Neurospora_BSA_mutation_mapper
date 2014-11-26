@@ -20,17 +20,17 @@ FILES="$BASE"/MV_SIM_READS/mv_sim.fq
 #	if bam output folder doesn't exist, make it
 ###############################################################
 
-if [ ! -d "$BASE/OR_MAP_BAM" ];
+if [ ! -d "$BASE/MV_MAP_BAM" ];
         then
-                mkdir "$BASE/OR_MAP_BAM"
-                echo "> created directory $BASE/OR_MAP_BAM"
+                mkdir "$BASE/MV_MAP_BAM"
+                echo "> created directory $BASE/MV_MAP_BAM"
 fi
 
 ##############################################################
 #	map fasta files to bowtie reference genome files
 ##############################################################
 
-BAM_DIR="$BASE/OR_MAP_BAM"
+BAM_DIR="$BASE/MV_MAP_BAM"
 
 for f in $FILES
 do

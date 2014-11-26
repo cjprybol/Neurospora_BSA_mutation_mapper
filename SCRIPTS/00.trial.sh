@@ -12,6 +12,7 @@ FILES="$BASE/ESSENTIAL/SCRIPTS"
 "$FILES/01.map_to_OR.sh"
 "$FILES/02.1.simulate_MV_reads.sh"
 "$FILES/02.2.sim_reads_to_OR.sh"
+"$FILES/02.3.vcf.sh"
 
 #"$FILES/03.remove_MV_snps.sh"
 #"$FILES/04.bed_filtered_bam.sh"
