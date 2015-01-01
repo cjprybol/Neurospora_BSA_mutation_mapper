@@ -3,14 +3,17 @@
 *.fq
 
 # heterochromatin files
-*.bed
+#*.bed
 
 # reference genomes
-*.fasta
+#*.fasta
 # index files for reference genomes
 *.fasta*
 
+# ingore system created files when submitting scripts to the queue
+SCRIPTS/g*
+
 # folders
-HETEROCHROMATIN/
+#HETEROCHROMATIN/
 MERGED_FASTQ/
-REF_GENOMES/
+#REF_GENOMES/
