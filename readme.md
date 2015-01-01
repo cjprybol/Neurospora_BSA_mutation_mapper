@@ -1,5 +1,4 @@
 ##DIM5 Analysis
----
 
 This analysis was performed on the zcluster computer at the University of Georgia
 
