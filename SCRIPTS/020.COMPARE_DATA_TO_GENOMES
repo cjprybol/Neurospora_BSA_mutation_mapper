@@ -1,0 +1,15 @@
+#bin/bash
+
+# Run all scripts in order
+
+BASE="/escratch4/cprybol1/cprybol1_Nov_19"
+FILES="$BASE/ESSENTIAL/SCRIPTS"
+
+# run scripts as
+#	$FILES/{ script_name_here }
+
+$FILES/021.map_to_OR.sh
+$FILES/022.simulate_MV_reads.sh
+$FILES/023.map_sim_reads_to_OR.sh
+$FILES/024.find_snps_between_genomes.sh
+$FILES/025.parse_snps.py

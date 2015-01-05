@@ -1,15 +1,11 @@
 #bin/bash
+# simulate mauriceville reads from the genome
 
-# Author: Cameron Prybol
-# Created: 2014.11.24
-# Description: simulate mauriceville reads from the genome
-
-#BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd | perl -pe 's|/[A-Z_]+/[A-Z_]+$||g')"
 BASE="/escratch4/cprybol1/cprybol1_Nov_19"
 FILES="$BASE"/ESSENTIAL/MERGED_FASTQ/*
 
 ###############################################################
-#	if bam output folder doesn't exist, make it
+#	if output folder doesn't exist, make it
 ###############################################################
 
 if [ ! -d "$BASE/MV_SIM_READS" ];
