@@ -1,4 +1,4 @@
-#bin/bash
+#!/bin/bash
 
 # map simulated mauriceville reads to the oak ridge genome
 

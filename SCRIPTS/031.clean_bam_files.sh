@@ -1,4 +1,4 @@
-#bin/bash
+#!/bin/bash
 
 # map fastq reads to the oak ridge genome
 

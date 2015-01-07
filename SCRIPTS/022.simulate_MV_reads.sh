@@ -1,6 +1,7 @@
-#bin/bash
+#!/bin/bash
 # simulate mauriceville reads from the genome
 
+cd `pwd`
 BASE="/escratch4/cprybol1/cprybol1_Nov_19"
 FILES="$BASE"/ESSENTIAL/MERGED_FASTQ/*
 
