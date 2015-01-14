@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# 
-
 BASE="/escratch4/cprybol1/cprybol1_Nov_19"
-FILES="$BASE"/MV_MAP_BAM/*.bam
 
 #########################################################
 #       if output folder doesn't exist, make it
@@ -15,10 +12,11 @@ if [ ! -d "$BASE/VCF_OUTPUT" ];
                 echo "> created directory $BASE/VCF_OUTPUT"
 fi
 
-IN_DIR="$BASE/MV_SIM_MAP_BAM"
 OUT_VCF_DIR="$BASE/VCF_OUTPUT"
 REF_GENOME_DIR="$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge"
 
+IN_DIR="$BASE/MV_SIM_MAP_BAM"
+FILES="$BASE"/MV_SIM_MAP_BAM/*.bam
 for f in $FILES
 do
 
@@ -40,5 +38,6 @@ do
 		tabix -p vcf "$OUT_VCF_DIR/$out_vcf.gz"
 		bcftools stats -F "$REF_GENOME_DIR/neurospora_crassa_or74a_12_supercontigs.fasta" -s - "$OUT_VCF_DIR/$out_vcf.gz" > "$OUT_VCF_DIR/$out_vcf.gz.stats"
 	
+	rm "$OUT_VCF_DIR/$out_vcf.gz.tbi"
 
 done

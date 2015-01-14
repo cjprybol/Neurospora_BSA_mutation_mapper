@@ -12,9 +12,9 @@ OUTFILE = sys.argv[2]
 
 # read infile, which is tab seperated, and in .gz compression format, with the header line on line 49
 vcf_data = pd.io.parsers.read_csv(INFILE,sep="\t",compression='gzip',header=49)
-
+	
 # drop the 'FORMAT' and '/escratch4/cprybol1/cprybol1_Nov_19/MV_MAP_BAM/mv_sim.sorted.bam' columns
-vcf_data = vcf_data.drop(['FORMAT','/escratch4/cprybol1/cprybol1_Nov_19/MV_MAP_BAM/mv_sim.sorted.bam'],axis=1)
+vcf_data = vcf_data.drop([vcf_data.columns.values[8],vcf_data.columns.values[9]],axis=1)
 
 # for each x in #CHROM column, split Chromosome '12.($supercontig)' and replace
 #	original value with '$supercontig'

@@ -38,6 +38,6 @@ do
 	file_name=$(echo "$file" | sed -e 's/\.f\(q\|astq\)//')
 
 	# -a            output all alignments for SE or unpaired PE
-	/usr/local/bwa/latest/bwa mem -a "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$f" | samtools view -buS - | samtools sort - "$BAM_DIR/$file_name.sorted"
+	/usr/local/bwa/latest/bwa mem "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$f" | samtools view -buS - | samtools sort - "$BAM_DIR/$file_name.sorted"
 
 done
