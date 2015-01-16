@@ -28,8 +28,7 @@ vcf_data = vcf_data[vcf_data['#CHROM'] <= 7]
 vcf_data = vcf_data[['#CHROM', 'POS', 'REF', 'ALT']]
 
 # rename column headers to drop the '#' infront of '#CHROM'
-#	and swap REF for OAK_RIDGE and ALT for MAURICEVILLE
-vcf_data.columns = ['CHROM', 'POS', 'OAK_RIDGE' , 'MAURICEVILLE']
+vcf_data.columns = ['CHROM', 'POS', 'REF' , 'ALT']
 
 # save to tab seperated file
 vcf_data.to_csv(OUTFILE,sep="\t")
