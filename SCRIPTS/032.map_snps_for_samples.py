@@ -37,7 +37,8 @@ for i in range(1,8):
 
 	for snp_index, snp in snp_chrom_sub.iterrows():
 
-		print('snp',snp_index,'of',len(snp_chrom_sub.index))
+		# snp_index returns the index of the original dataframe, not the subset. need to figure that out
+#		print('snp',snp_index,'of',len(snp_chrom_sub.index))
 
 		ref_match_count = 0
 		alt_match_count = 0
