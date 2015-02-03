@@ -2,15 +2,17 @@
 
 # map fastq reads to the oak ridge genome
 cd `pwd`
-BASE="/escratch4/cprybol1/cprybol1_Nov_19"
-FILES="$BASE"/ESSENTIAL/MERGED_FASTQ/*
+BASE="/escratch4/cprybol1/cprybol1_Jan_21"
 
-##############################################################
-#	build index from reference genome
-############################################################
+###############################################################
+#	if output folder for index doesn't exist, make it
+###############################################################
 
-	/usr/local/bwa/latest/bwa index "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta"
-
+if [ ! -d "$BASE/OR_INDEX" ];
+        then
+                mkdir "$BASE/OR_INDEX"
+                echo "> created directory $BASE/OR_INDEX"
+fi
 
 ###############################################################
 #	if output folder doesn't exist, make it
@@ -23,21 +25,47 @@ if [ ! -d "$BASE/OR_MAP_BAM" ];
 fi
 
 ##############################################################
+#	build index from reference genome
+############################################################
+
+	/usr/local/bowtie2/latest/bin/bowtie2-build "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$BASE/OR_INDEX/or_index"
+
+##############################################################
 #	map fasta files to bwa reference genome files
 ##############################################################
 
 BAM_DIR="$BASE/OR_MAP_BAM"
+
+# only want to grab the R1 files
+FILES="$BASE"/ESSENTIAL/FASTQ/*R1.fastq
 
 for f in $FILES
 do
 
 	# create variable containing filename but without full directory path
 	file=${f##*/}
+#	echo "file: $file"
+	folder=$(dirname $f)
+#	echo "folder: $folder"
 
-	# create variable with same name but without .fastq and/or .fq file extension
-	file_name=$(echo "$file" | sed -e 's/\.f\(q\|astq\)//')
+	# get file base to append R2.fastq to
+	base=$(echo "$file" | perl -pe 's/(.*)?\.R1.*/$1/')
 
-	# -a            output all alignments for SE or unpaired PE
-	/usr/local/bwa/latest/bwa mem -a "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$f" | samtools view -buS - | samtools sort - "$BAM_DIR/$file_name.sorted"
+	# get base without that ugly identifier
+	clean_base=$(echo "$file" | perl -pe 's/(.*)?-.*/$1/')
+
+	# get reverse file
+	rev="$base.R2.fastq"
+#	echo "reverse: $rev"
+
+	# get output file
+	out="$clean_base"
+#	echo "out: $out"
+
+	echo "in1: $f"
+	echo "in2: $folder/$rev"
+
+	# set max distance for paired end to 3000 !! set this to data !!
+	/usr/local/bowtie2/latest/bin/bowtie2 -X 3000 -x "$BASE/OR_INDEX/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
 
 done

@@ -2,7 +2,7 @@
 
 # 
 
-BASE="/escratch4/cprybol1/cprybol1_Nov_19"
+BASE="/escratch4/cprybol1/cprybol1_Jan_21"
 FILES="$BASE"/SNP_MAPPING/*snp_map\.out_12*
 
 OUT_DIR="$BASE/SNP_MAPPING/PARSED_SNP_INFO"

@@ -2,7 +2,7 @@
 
 # map fastq reads to the oak ridge genome
 
-BASE="/escratch4/cprybol1/cprybol1_Nov_19"
+BASE="/escratch4/cprybol1/cprybol1_Jan_21"
 FILES="$BASE"/OR_MAP_BAM_CLEANED/*.bam
 
 ###############################################################

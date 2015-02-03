@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE="/escratch4/cprybol1/cprybol1_Nov_19"
+BASE="/escratch4/cprybol1/cprybol1_Jan_21"
 
 #########################################################
 #       if output folder doesn't exist, make it
@@ -15,8 +15,8 @@ fi
 OUT_VCF_DIR="$BASE/VCF_OUTPUT"
 REF_GENOME_DIR="$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge"
 
-IN_DIR="$BASE/MV_SIM_MAP_BAM"
-FILES="$BASE"/MV_SIM_MAP_BAM/*.bam
+IN_DIR="$BASE/BED_FILTERED_BAM"
+FILES="$BASE"/BED_FILTERED_BAM/*.bam
 for f in $FILES
 do
 
@@ -34,10 +34,11 @@ do
 #		#	−O v	output vcf format
 #		#	-o	output filename
 #	
-		samtools mpileup -ugf "$REF_GENOME_DIR/neurospora_crassa_or74a_12_supercontigs.fasta" "$IN_DIR/$in_file" | bcftools call -vmO z -o "$OUT_VCF_DIR/$out_vcf.gz"
-		tabix -p vcf "$OUT_VCF_DIR/$out_vcf.gz"
-		bcftools stats -F "$REF_GENOME_DIR/neurospora_crassa_or74a_12_supercontigs.fasta" -s - "$OUT_VCF_DIR/$out_vcf.gz" > "$OUT_VCF_DIR/$out_vcf.gz.stats"
+	samtools mpileup -ugf "$REF_GENOME_DIR/neurospora_crassa_or74a_12_supercontigs.fasta" "$IN_DIR/$in_file" | bcftools call -vmO z -o "$OUT_VCF_DIR/$out_vcf.gz"
+	tabix -p vcf "$OUT_VCF_DIR/$out_vcf.gz"
+	bcftools stats -F "$REF_GENOME_DIR/neurospora_crassa_or74a_12_supercontigs.fasta" -s - "$OUT_VCF_DIR/$out_vcf.gz" > "$OUT_VCF_DIR/$out_vcf.gz.stats"
 	
+	gunzip "$OUT_VCF_DIR/$out_vcf.gz"
 	rm "$OUT_VCF_DIR/$out_vcf.gz.tbi"
 
 done

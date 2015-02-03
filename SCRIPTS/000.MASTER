@@ -2,7 +2,7 @@
 
 # Run all scripts in order
 cd `pwd`
-BASE="/escratch4/cprybol1/cprybol1_Nov_19"
+BASE="/escratch4/cprybol1/cprybol1_Jan_21"
 FILES="$BASE/ESSENTIAL/SCRIPTS"
 
 # run scripts as

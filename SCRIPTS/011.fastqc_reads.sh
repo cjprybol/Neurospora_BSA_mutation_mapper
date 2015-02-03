@@ -2,8 +2,8 @@
 
 # run FASTQC on reads to check quality of data
 cd `pwd`
-BASE="/escratch4/cprybol1/cprybol1_Nov_19"
-FILES="$BASE"/ESSENTIAL/MERGED_FASTQ/*
+BASE="/escratch4/cprybol1/cprybol1_Jan_21"
+FILES="$BASE"/ESSENTIAL/FASTQ/*.fastq
 
 # create output folder to direct results to
 
