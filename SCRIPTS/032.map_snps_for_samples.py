@@ -5,35 +5,34 @@ import sys
 import csv
 
 IN = sys.argv[1]
-OUT_BASE = sys.argv[2]
+OUT_FILE = sys.argv[2]
 SNP_FILE = sys.argv[3]
+
 
 # set column names for pre-cleaned sam data
 
-col_names=['QNAME','CHROM','POS','SEQ']
+col_names=['QNAME','CONTIG','POS','SEQ']
 
 # read in data
 sam_data = pd.read_csv(IN, delim_whitespace=True,names=col_names)
+#sam_data = pd.read_csv(IN, delim_whitespace=True,names=col_names,nrows=139429)
 
 # calculate end position of each read
 
 sam_data['END_POS'] = sam_data.apply(lambda row: row['POS'] + len(row['SEQ']) - 1,axis=1)
 
 snp_data = pd.read_csv(SNP_FILE, delim_whitespace=True,header=0)
+#snp_data = pd.read_csv(SNP_FILE, delim_whitespace=True,header=0,nrows=78100)
+
+f = open(OUT_FILE, 'w')
+writer = csv.writer(f,delimiter='\t')
+print('saving to:', OUT_FILE, sep='\t')
 
 # iterate over each chromosome in turn
 for i in range(1,8):
 
-#	print('chromosome',i,sep='\t')
-
-	OUT_FILE = OUT_BASE + '_12.' + str(i)
-
-	f = open(OUT_FILE, 'w')
-	print('saving to:', OUT_FILE, sep='\t')
-	writer = csv.writer(f,delimiter='\t')
-
-	sam_chrom_sub = sam_data[sam_data.CHROM == i]
-	snp_chrom_sub = snp_data[snp_data.CHROM == i]
+	sam_chrom_sub = sam_data[sam_data.CONTIG == i]
+	snp_chrom_sub = snp_data[snp_data.CONTIG == i]
 
 	for snp_index, snp in snp_chrom_sub.iterrows():
 
@@ -97,4 +96,5 @@ for i in range(1,8):
 			ref_match_count += ref_match
 			alt_match_count += alt_match
 			read_mismatch_count += no_match
-		writer.writerow([ 'position', snp['POS'], 'ref_match_count:',ref_match_count,'alt_match_count:',alt_match_count,'read_mismatch_count:',read_mismatch_count ])
+		writer.writerow(['CONTIG', i ,'POS', snp['POS'], 'ref_match_count:',ref_match_count,'alt_match_count:',alt_match_count,'read_mismatch_count:',read_mismatch_count ])
+		print('CONTIG', i ,'POS', snp['POS'], 'ref_match_count:',ref_match_count,'alt_match_count:',alt_match_count,'read_mismatch_count:',read_mismatch_count,sep="\t" )
