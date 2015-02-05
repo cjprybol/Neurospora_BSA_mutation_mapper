@@ -29,4 +29,6 @@ do
 
 	python3 033.bucket_count.py "$OUT_DIR/$out_base.temp" "$OUT_DIR/$out_file" $window $slide
 
+	rm "$OUT_DIR/$out_base.temp"
+
 done
