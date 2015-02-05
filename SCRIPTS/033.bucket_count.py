@@ -1,66 +1,53 @@
 #!/usr/local/bin/python3
 
-# Author : Cameron Prybol
-# email : cameron.prybol@gmail.com
-# date : 2014.07.17
-# description: creates bucketed counts for mpileup counts to allow for graphing in R
-
 import sys
+import pandas as pd
+import csv
 
+IN_FILE = sys.argv[1]
+OUT_FILE = sys.argv[2]
+WINDOW = int(sys.argv[3])
+SLIDE = int(sys.argv[4])
 
-count = 5000	# size of buckets
-slide_size = count // 5
-in_file = ''
-out_file = ''
-if (len(sys.argv) == 2):
-	in_file = sys.argv[1]
-elif (len(sys.argv) == 3):
-	in_file = sys.argv[1]
-	count = int(sys.argv[2])
+window = WINDOW
+slide = SLIDE
 
-out_file = in_file + '_' + str(count) + 'bp_count'
+print(OUT_FILE)
 
-counts = []
+snp_data = pd.read_table(IN_FILE,sep="\t",header=0)
 
-for i in range(0,5):
-	current_bucket = 0
-	offset = i * slide_size 
-	current_total = 0
-	records_read = 0
-	records_skipped = 0
-	with open(in_file) as f:
-		for q in range(0,offset):
-			next(f)
-		for line in f:
-			line = line.strip("\n").split()
-			temp = int(line[1])-1
-			bucket = (temp-offset)//count
-			if (bucket > current_bucket):
-				if (records_read > 0):
-					counts.append([(current_bucket * count) + 1 + offset,current_total/records_read,records_read,records_skipped])
-				else:
-					counts.append([(current_bucket * count) + 1 + offset,'0',records_read,records_skipped])
-				current_bucket = bucket
-				current_total = 0
-				records_read = 0
-				records_skipped = 0
-			if (int(line[2]) != 0 and int(line[3]) != 0 and float(line[4]) != 0):	#don't pull down average by including positions without any reads
-				current_total += float(line[4])
-				records_read += 1
-			else:
-				records_skipped += 1
-	if (records_read > 0):
-		counts.append([(current_bucket * count) + 1 + offset,current_total/records_read,records_read,records_skipped])
-	else:
-		counts.append([(current_bucket * count) + 1 + offset,'0',records_read,records_skipped])
+out_file = open(OUT_FILE,'w')
+writer = csv.writer(out_file, delimiter="\t")
 
-counts.sort()
+writer.writerow( [ 'CONTIG', 'KB', 'TOTAL', 'RATIO', 'MISMATCH_RATIO'] )
 
-out = open(out_file,'w')
-	
-for value in counts:
-	output = '\t'.join(map(str, value)) + '\n'
-	print(output.strip())
-	out.write(output)
+for i in range (1,8):
+	contig_data = snp_data[snp_data['CONTIG'] == i]
+	contig_data['KB'] = contig_data['POS']//1000
 
-out.close()
+	min_kb = contig_data.iloc[0]['KB']
+	max_kb = contig_data.iloc[len(contig_data.index)-1]['KB']
+
+	for window_start in range(min_kb,max_kb+1,slide):
+		window_end = window_start + window
+		window_data = contig_data[(contig_data['KB'] >= window_start) & (contig_data['KB'] < window_end)]
+		entries = len(window_data.index)
+		total = window_data['REF'].sum() + window_data['ALT'].sum()
+		ratio = 0
+		for j in range(0,entries):
+			ref = window_data.iloc[j]['REF']
+			alt = window_data.iloc[j]['ALT']
+			entry_total = ref+alt
+			if (entry_total > 0):
+				entry_ratio = ref / entry_total
+				normalized_entry_ratio = entry_ratio * ( entry_total / total )
+				ratio += normalized_entry_ratio
+		mismatch_total = window_data['MIS'].sum()
+		mis_ratio = ''
+		try:
+			mis_ratio = mismatch_total / (total + mismatch_total)
+		except:
+			mis_ratio = "NA"
+		if (ratio == 0):
+			ratio = "NA"
+		writer.writerow( [ i, window_start, total, ratio, mis_ratio ] )

@@ -16,13 +16,17 @@ do
 
 	# create variable containing filename but without full directory path
 	file=${f##*/}
-	echo $f
 
-#		out_file=$(echo "$file" | perl -pe 's/\.snp_map.out_(12.[1-7])/\.snp_data_$1/')
-#	
-#		echo "$OUT_DIR/$out_file"	
-#	
-#		echo -e "position\tref_match_count\talt_match_count\tread_mismatch_count" > $OUT_DIR/$out_file
-#		grep '^position' $f | awk '{OFS="\t"}{print $2,$4,$6,$8}' >> $OUT_DIR/$out_file
+	out_base=$(echo "$file" | perl -pe 's/\.bed_filtered\.snp_map\.out//')
+
+	window=5
+	slide=1
+
+	out_file="$out_base.$window""kb_window"
+
+	echo -e "CONTIG\tPOS\tREF\tALT\tMIS" > "$OUT_DIR/$out_base.temp"
+	grep 'CONTIG' $f | awk '{OFS="\t"}{print $2,$4,$6,$8,$10}' | sort -k1n,1 -k2n,2 >> "$OUT_DIR/$out_base.temp" 
+
+	python3 033.bucket_count.py "$OUT_DIR/$out_base.temp" "$OUT_DIR/$out_file" $window $slide
 
 done
