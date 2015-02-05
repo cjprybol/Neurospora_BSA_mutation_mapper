@@ -63,6 +63,8 @@ vcf_data['COUNT'] = vcf_data['INFO'].apply(lambda x: COUNT(x))
 
 # drop all locations without perfect consensus
 vcf_data = vcf_data[(vcf_data['RATIO'] == 0)]
+
+vcf_data.sort(['CONTIG', 'POS'], inplace=True)
 	
 # save to tab seperated file
 vcf_data.reset_index(drop=True, inplace=True)
