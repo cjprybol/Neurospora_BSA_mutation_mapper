@@ -15,24 +15,16 @@ if [ ! -d "$OUT_DIR" ];
                 echo "> created directory $OUT_DIR"
 fi
 
-for f in "$IN_DIR/3_CPX3_pool.bed_filtered.bam" "$IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam" "$IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam"
+#for f in "$IN_DIR/3_CPX3_pool.bed_filtered.bam" "$IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam" "$IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam"
+for f in "$IN_DIR/3_CPX3_pool.bed_filtered.bam"
 do
 
-	#lane3-index01-ATCACG-CPx3.bed_filtered.bam
 	in_file=${f##*/}
-	file_head=$(echo "$in_file" | sed -e 's///')
+	file_head=$(echo "$in_file" | sed -e 's/\.bed_filtered\.bam//')
 
 	# assign filter list to variable
-	filter_list="$BASE/ESSENTIAL/FILTER_SITES/$file_head.filter_sites"
+	filter_list="$BASE/ESSENTIAL/FILTER_SITES/$file_head.filter_sites.bed"
 
-	echo "$filter_list"
-
-#		# filter the sam file
-#		python3 06.filter.py "$OUT_DIR/$i.tmp.sam" "$filter_list" "$OUT_DIR/$out_file.sam"
+	samtools view -h -L $filter_list $f > "$OUT_DIR/$file_head.tmp.sam"
 
 done
-
-##############################################################################################
-#	now create a DIM-5 filter set that matches each of the filter sites for each index
-#	need to do this because want to compare DIM-5 sites to index filter sites for each index
-##############################################################################################
