@@ -44,28 +44,24 @@ do
 
 	# create variable containing filename but without full directory path
 	file=${f##*/}
-#	echo "file: $file"
 	folder=$(dirname $f)
-#	echo "folder: $folder"
 
-	# get file base to append R2.fastq to
+	# get file base to append R2.fastq to, allowing for variable handling of the R1/R2 forward/reverse filenames
 	base=$(echo "$file" | perl -pe 's/(.*)?\.R1.*/$1/')
 
-	# get base without that ugly identifier
+	# get base filename without the arbitrary numerical identifier
 	clean_base=$(echo "$file" | perl -pe 's/(.*)?-.*/$1/')
 
 	# get reverse file
 	rev="$base.R2.fastq"
-#	echo "reverse: $rev"
 
 	# get output file
 	out="$clean_base"
-#	echo "out: $out"
 
 	echo "in1: $f"
 	echo "in2: $folder/$rev"
 
-	# set max distance for paired end to 3000 !! set this to data !!
+	# set max distance for paired end to 3000 !! set this to data !! based on quality control data from sequencing center
 	/usr/local/bowtie2/latest/bin/bowtie2 -X 3000 -x "$BASE/OR_INDEX/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
 
 done

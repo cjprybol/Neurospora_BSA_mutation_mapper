@@ -19,32 +19,22 @@ fi
 
 IN_DIR="$BASE/OR_MAP_BAM"
 
-# determine number of files, used for creating readable output to user
-num_files=$(ls -1 "$IN_DIR" | wc -l)
-
-i=1
-
 OUT_DIR="$BASE/BED_FILTERED_BAM"
 
-###############################################################################################################
-#	
-##############################################################################################################
-
-#for f in $FILES
-for f in "$IN_DIR"/4_CPX22_pool_method_1.sorted.bam "$IN_DIR"/5_CPX22_pool_method_2.sorted.bam
+for f in $FILES
 do
-        echo "> Processing file $i of $num_files" 
-
 	#remove the path prefix on the file name
 	in_file=${f##*/}
 	out_file=$(echo "$in_file" | sed -e 's/\.sorted.*/\.bed_filtered/')
 
+	# -v	Only report those entries in A that have _no overlaps_ with B.  - Similar to "grep -v" (an homage).
+	# -abam	The A input file is in BAM format.  Output will be BAM as well.
+	# -b <bed/gff/vcf>
+	# i.e. find all reads (in -abam) that are not in -b, and write those to file (filter out regions in -b)
 	/usr/local/bedtools/latest/bin/bedtools intersect -v -abam "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file.bam.tmp"
 	# filter out unmapped reads
 	samtools view -bh -F 4 -q 10 "$OUT_DIR/$out_file.bam.tmp" | samtools sort - "$OUT_DIR/$out_file"
 
 	rm "$OUT_DIR/$out_file.bam.tmp"
-
-        let i=i+1
 
 done

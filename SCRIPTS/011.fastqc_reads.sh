@@ -5,8 +5,8 @@ cd `pwd`
 BASE="/escratch4/cprybol1/cprybol1_Jan_21"
 FILES="$BASE"/ESSENTIAL/FASTQ/*.fastq
 
-# create output folder to direct results to
 
+# if output folder does not exist, create it
 if [ ! -d "$BASE/FASTQC_OUT" ];
         then
                 mkdir "$BASE/FASTQC_OUT"
@@ -16,6 +16,7 @@ fi
 
 OUT_DIR="$BASE/FASTQC_OUT"
 
+# run fastqc on all fastq files
 for f in $FILES
 do
 

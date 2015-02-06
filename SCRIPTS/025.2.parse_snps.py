@@ -1,17 +1,12 @@
 #!/usr/local/bin/python3
 
-# Author: Cameron Prybol
-# Description: parses SNPS out of mauriceville mapped VCF file
-
 import sys
 import subprocess
 import pandas as pd
 
 INFILE = sys.argv[1]
 
-#print(INFILE)
 OUTFILE = str(INFILE.split(".")[0]) + ".parsed_snps.out"
-#print(OUTFILE)
 
 head = ['#CHROM','POS','ID','REF','ALT','QUAL','FILTER','INFO','FORMAT','JUNK']
 

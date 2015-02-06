@@ -18,7 +18,8 @@ fi
 
 IN_DIR="$BASE"/BED_FILTERED_BAM
 
-for f in $IN_DIR/3_CPX3_pool.bed_filtered.bam $IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam $IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam
+#for f in $IN_DIR/3_CPX3_pool.bed_filtered.bam $IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam $IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam
+for f in $IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam $IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam
 do
 
 	# create variable containing filename but without full directory path
@@ -34,8 +35,8 @@ do
 	#	if reads are on supercontig_12.1 thru 7, return the read_id, supercontig, position, and sequence |
 	#	drop 'Supercontig_12.' and leave only the trailing number >
 	#	save to file
-#		echo "writing sam"
-#		samtools view $f | awk '{OFS="\t"}{ if ($3 ~ /^Supercontig_12.[1-7]$/) print $1,$3,$4,$10}' | sed 's/Supercontig_12\.//'> "$OUT_DIR/$sam_temp"
+	echo "writing sam"
+	samtools view $f | awk '{OFS="\t"}{ if ($3 ~ /^Supercontig_12.[1-7]$/) print $1,$3,$4,$10}' | sed 's/Supercontig_12\.//'> "$OUT_DIR/$sam_temp"
 
 	echo "cleaning"
 	# python3 032.map_snps_for_samples.py [sam_file] [out_file] [snp_list]
