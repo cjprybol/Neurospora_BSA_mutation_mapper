@@ -2,19 +2,19 @@
 
 # run FASTQC on reads to check quality of data
 cd `pwd`
-BASE="/escratch4/cprybol1/cprybol1_Jan_21"
+BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
 FILES="$BASE"/ESSENTIAL/FASTQ/*.fastq
 
+OUT_DIR="$BASE/FASTQC_OUT"
 
 # if output folder does not exist, create it
-if [ ! -d "$BASE/FASTQC_OUT" ];
+if [ ! -d "$OUT_DIR" ];
         then
-                mkdir "$BASE/FASTQC_OUT"
-                echo "> created directory $BASE/FASTQC_OUT"
+                mkdir "$OUT_DIR"
+                echo "> created directory $OUT_DIR"
 fi
 
 
-OUT_DIR="$BASE/FASTQC_OUT"
 
 # run fastqc on all fastq files
 for f in $FILES

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-BASE="/escratch4/cprybol1/cprybol1_Jan_21"
+cd `pwd`
+BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
 FILES="$BASE"/SNP_MAPPING/*snp_map\.out
 
 OUT_DIR="$BASE/SNP_MAPPING/PARSED_SNP_INFO"

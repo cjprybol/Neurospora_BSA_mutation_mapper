@@ -2,39 +2,41 @@
 
 # map fastq reads to the oak ridge genome
 cd `pwd`
-BASE="/escratch4/cprybol1/cprybol1_Jan_21"
+BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+
+INDEX_DIR="$BASE/OR_INDEX"
+BAM_DIR="$BASE/OR_MAP_BAM"
 
 ###############################################################
 #	if output folder for index doesn't exist, make it
 ###############################################################
 
-if [ ! -d "$BASE/OR_INDEX" ];
+if [ ! -d "$INDEX_DIR" ];
         then
-                mkdir "$BASE/OR_INDEX"
-                echo "> created directory $BASE/OR_INDEX"
+                mkdir "$INDEX_DIR"
+                echo "> created directory $INDEX_DIR"
 fi
 
 ###############################################################
 #	if output folder doesn't exist, make it
 ###############################################################
 
-if [ ! -d "$BASE/OR_MAP_BAM" ];
+if [ ! -d "$BAM_DIR" ];
         then
-                mkdir "$BASE/OR_MAP_BAM"
-                echo "> created directory $BASE/OR_MAP_BAM"
+                mkdir "$BAM_DIR"
+                echo "> created directory $BAM_DIR"
 fi
 
 ##############################################################
 #	build index from reference genome
 ############################################################
 
-	/usr/local/bowtie2/latest/bin/bowtie2-build "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$BASE/OR_INDEX/or_index"
+	/usr/local/bowtie2/latest/bin/bowtie2-build "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$INDEX_DIR/or_index"
 
 ##############################################################
 #	map fasta files to bwa reference genome files
 ##############################################################
 
-BAM_DIR="$BASE/OR_MAP_BAM"
 
 # only want to grab the R1 files
 FILES="$BASE"/ESSENTIAL/FASTQ/*R1.fastq
@@ -62,6 +64,6 @@ do
 	echo "in2: $folder/$rev"
 
 	# set max distance for paired end to 3000 !! set this to data !! based on quality control data from sequencing center
-	/usr/local/bowtie2/latest/bin/bowtie2 -X 3000 -x "$BASE/OR_INDEX/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
+	/usr/local/bowtie2/latest/bin/bowtie2 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
 
 done

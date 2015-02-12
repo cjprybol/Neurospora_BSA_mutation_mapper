@@ -2,14 +2,14 @@
 
 # Run all scripts in order
 cd `pwd`
-BASE="/escratch4/cprybol1/cprybol1_Jan_21"
+BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
 FILES="$BASE/ESSENTIAL/SCRIPTS"
 
 # run scripts as
 #	$FILES/{ script_name_here }
 
-# sh $FILES/021.map_to_OR.sh
-# sh $FILES/022.simulate_MV_reads.sh
-# sh $FILES/023.map_sim_reads_to_OR.sh
+sh $FILES/021.map_to_OR.sh
+sh $FILES/022.simulate_MV_reads.sh
+sh $FILES/023.map_sim_reads_to_OR.sh
 sh $FILES/024.find_snps_between_genomes.sh
 sh $FILES/025.parse_snps.py

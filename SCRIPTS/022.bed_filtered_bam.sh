@@ -1,25 +1,25 @@
 #bin/bash
 
-BASE="/escratch4/cprybol1/cprybol1_Jan_21"
+cd `pwd`
+BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
 FILES="$BASE"/OR_MAP_BAM/*.bam
 
+IN_DIR="$BASE/OR_MAP_BAM"
+OUT_DIR="$BASE/BED_FILTERED_BAM"
 #########################################################
 #	if output folder doesn't exist, make it
 ########################################################
 
-if [ ! -d "$BASE/BED_FILTERED_BAM" ];
+if [ ! -d "$OUT_DIR" ];
         then
-                mkdir "$BASE/BED_FILTERED_BAM"
-                echo "> created directory $BASE/BED_FILTERED_BAM"
+                mkdir "$OUT_DIR"
+                echo "> created directory $OUT_DIR"
 fi
 
 ##############################################################
 #	assign directory variable names
 ##############################################################
 
-IN_DIR="$BASE/OR_MAP_BAM"
-
-OUT_DIR="$BASE/BED_FILTERED_BAM"
 
 for f in $FILES
 do

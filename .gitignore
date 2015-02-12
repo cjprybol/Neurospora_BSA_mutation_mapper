@@ -8,7 +8,7 @@
 # reference genomes
 #*.fasta
 # index files for reference genomes
-*.fasta*
+*.fai
 
 # ingore system created files when submitting scripts to the queue
 SCRIPTS/g*

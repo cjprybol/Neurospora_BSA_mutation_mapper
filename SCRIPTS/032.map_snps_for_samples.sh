@@ -2,7 +2,8 @@
 
 # map fastq reads to the oak ridge genome
 
-BASE="/escratch4/cprybol1/cprybol1_Jan_21"
+cd `pwd`
+BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
 
 ###############################################################
 #	if output folder doesn't exist, make it
@@ -18,8 +19,7 @@ fi
 
 IN_DIR="$BASE"/BED_FILTERED_BAM
 
-#for f in $IN_DIR/3_CPX3_pool.bed_filtered.bam $IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam $IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam
-for f in $IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam $IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam
+for f in $IN_DIR/3_CPX3_pool.bed_filtered.bam $IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam $IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam
 do
 
 	# create variable containing filename but without full directory path
