@@ -27,10 +27,12 @@ do
 	file_head="$( echo $in_file | perl -pe 's/\.cleaned\.vcf//')"
 	out_all="$file_head.all"
 	out_CDS="$file_head.CDS"
-	out_no_overlap="$file_head.no_overlap"
+	out_not_CDS="$file_head.GFF_non_coding"
+	out_no_overlap="$file_head.not_in_GFF"
 
 	/usr/local/bedtools/latest/bin/bedtools intersect -wo -a $GFF -b $f > "$OUT_DIR/$out_all"
 	grep 'CDS' "$OUT_DIR/$out_all" > "$OUT_DIR/$out_CDS"
+	grep -v 'CDS' "$OUT_DIR/$out_all" > "$OUT_DIR/$out_not_CDS"
 	/usr/local/bedtools/latest/bin/bedtools intersect -v -a $f -b $GFF > "$OUT_DIR/$out_no_overlap"
 
 done
