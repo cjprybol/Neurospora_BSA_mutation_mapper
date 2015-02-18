@@ -5,7 +5,7 @@ BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" 
 
 IN_DIR="$BASE"/GFF_OVERLAP
 
-FILES="$IN_DIR"/*.CDS
+FILES="$IN_DIR"/*.cds_windows
 
 
 #########################################################
@@ -24,14 +24,15 @@ TRANSCRIPTS="$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74
 for f in $FILES
 do
 	in_file="${f##*/}"
-	file_head=$( echo "$in_file" | perl -pe 's/\.CDS//')
+	file_head=$( echo "$in_file" | perl -pe 's/\.cds_windows//')
 
-	perl -pe 's/.*?Parent=(NCU[0-9]+T[0-9]).*/$1/' $f > "$OUT_DIR/$file_head.transcripts.temp"
+	cds_file="$f"
+	transcript_list="$file_head.transcript_list"
+	snps="$file_head.snp_list"
 
-	python3 045.1.extract_fasta_seq.py "$OUT_DIR/$file_head.transcripts.temp" "$TRANSCRIPTS" "$OUT_DIR/$file_head.fasta_extract"
-	python3 045.2.translate.py "$f" "$OUT_DIR/$file_head.fasta_extract" "$OUT_DIR/$file_head.translated_CDS"
+	python3 045.1.extract_fasta_seq.py "$IN_DIR/$transcript_list" "$TRANSCRIPTS" "$OUT_DIR/$file_head.fasta_extract"
+	python3 045.2.translate.py "$cds_file" "$IN_DIR/$snps" "$OUT_DIR/$file_head.fasta_extract" "$OUT_DIR/$file_head.translated_CDS"
 
-	rm "$OUT_DIR/$file_head.transcripts.temp"
 	rm "$OUT_DIR/$file_head.fasta_extract"
 
 
