@@ -1,7 +1,8 @@
 #!/bin/bash
 
 cd `pwd`
-BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
+
 FILES="$BASE"/KB_FILTERED_VCF_OUTPUT/*kb_filtered.vcf
 
 DIR="$BASE"/KB_FILTERED_VCF_OUTPUT

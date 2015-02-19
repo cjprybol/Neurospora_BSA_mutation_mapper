@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd `pwd`
-BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 FILES="$BASE"/SNP_MAPPING/*snp_map\.out
 
 OUT_DIR="$BASE/SNP_MAPPING/PARSED_SNP_INFO"

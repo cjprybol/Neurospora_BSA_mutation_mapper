@@ -2,7 +2,7 @@
 
 # Run all scripts in order
 cd `pwd`
-BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 FILES="$BASE/ESSENTIAL/SCRIPTS"
 
 # run scripts as

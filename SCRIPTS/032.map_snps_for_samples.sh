@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# map fastq reads to the oak ridge genome
-
 cd `pwd`
-BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 
 ###############################################################
 #	if output folder doesn't exist, make it
@@ -19,6 +17,7 @@ fi
 
 IN_DIR="$BASE"/BED_FILTERED_BAM
 
+### here
 for f in $IN_DIR/3_CPX3_pool.bed_filtered.bam $IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam $IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam
 do
 
@@ -42,6 +41,6 @@ do
 	# python3 032.map_snps_for_samples.py [sam_file] [out_file] [snp_list]
 	python3 032.map_snps_for_samples.py "$OUT_DIR/$sam_temp" "$OUT_DIR/$out_file" "$BASE/VCF_OUTPUT/2_Mauriceville.parsed_snps.out"
 
-#	rm "$BASE/OR_MAP_BAM_CLEANED/$sam_temp"
+	rm "$BASE/OR_MAP_BAM_CLEANED/$sam_temp"
 
 done

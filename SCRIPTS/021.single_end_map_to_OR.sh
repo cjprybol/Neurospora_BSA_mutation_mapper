@@ -2,7 +2,7 @@
 
 # map fastq reads to the oak ridge genome
 cd `pwd`
-BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 
 INDEX_DIR="$BASE/OR_INDEX"
 BAM_DIR="$BASE/OR_MAP_BAM"
@@ -31,7 +31,7 @@ fi
 #	build index from reference genome
 ############################################################
 
-	/usr/local/bowtie2/latest/bin/bowtie2-build "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$INDEX_DIR/or_index"
+	bowtie2-build "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$INDEX_DIR/or_index"
 
 ##############################################################
 #	map fasta files to bwa reference genome files
@@ -50,6 +50,6 @@ do
 	# get base name without extension
 	out=$(echo "$file" | perl -pe 's/\.fastq//')
 
-	/usr/local/bowtie2/latest/bin/bowtie2 -x "$BASE/OR_INDEX/or_index" -1 $f | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
+	bowtie2 -x "$BASE/OR_INDEX/or_index" -1 $f | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
 
 done

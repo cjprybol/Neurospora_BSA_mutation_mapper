@@ -2,7 +2,7 @@
 
 # map fastq reads to the oak ridge genome
 cd `pwd`
-BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 
 INDEX_DIR="$BASE/OR_INDEX"
 BAM_DIR="$BASE/OR_MAP_BAM"
@@ -31,7 +31,7 @@ fi
 #	build index from reference genome
 ############################################################
 
-	/usr/local/bowtie2/latest/bin/bowtie2-build "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$INDEX_DIR/or_index"
+	bowtie2-build "$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge/neurospora_crassa_or74a_12_supercontigs.fasta" "$INDEX_DIR/or_index"
 
 ##############################################################
 #	map fasta files to bwa reference genome files
@@ -58,6 +58,6 @@ do
 	echo "in2: $folder/$rev"
 
 	# set max distance for paired end to 3000 !! set this to data !! based on quality control data from sequencing center
-	/usr/local/bowtie2/latest/bin/bowtie2 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
+	bowtie2 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
 
 done

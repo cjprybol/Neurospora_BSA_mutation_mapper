@@ -1,7 +1,7 @@
-#bin/bash
+#!/bin/bash
 
 cd `pwd`
-BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 FILES="$BASE"/OR_MAP_BAM/*.bam
 
 IN_DIR="$BASE/OR_MAP_BAM"
@@ -31,7 +31,7 @@ do
 	# -abam	The A input file is in BAM format.  Output will be BAM as well.
 	# -b <bed/gff/vcf>
 	# i.e. find all reads (in -abam) that are not in -b, and write those to file (filter out regions in -b)
-	/usr/local/bedtools/latest/bin/bedtools intersect -v -abam "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file.bam.tmp"
+	bedtools intersect -v -abam "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file.bam.tmp"
 	# filter out unmapped reads
 	samtools view -bh -F 4 -q 10 "$OUT_DIR/$out_file.bam.tmp" | samtools sort - "$OUT_DIR/$out_file"
 

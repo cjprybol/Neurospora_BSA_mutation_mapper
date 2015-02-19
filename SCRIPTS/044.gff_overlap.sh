@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd `pwd`
-BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 
 FILES="$BASE"/KB_FILTERED_VCF_OUTPUT/CLEANED/*.vcf
 
@@ -27,7 +27,7 @@ do
 	file_head="$( echo $in_file | perl -pe 's/\.cleaned\.vcf//')"
 
 	# if snps overlap features in GFF file, report them
-	/usr/local/bedtools/latest/bin/bedtools intersect -wo -a $GFF -b $f > "$OUT_DIR/$file_head.all"
+	bedtools intersect -wo -a $GFF -b $f > "$OUT_DIR/$file_head.all"
 
 	# if anything falls in a CDS window, then it must be checked for amino acid synonymy, so report which transcripts need to be checked
 	grep 'CDS' "$OUT_DIR/$file_head.all" | awk '{print $9}' | perl -pe 's/.*?;Parent=(NCU[0-9]+T[0-9])/$1/' > "$OUT_DIR/$file_head.transcript_list"
@@ -42,6 +42,6 @@ do
 		grep "$p" "$GFF" | grep "CDS" | awk '{OFS="\t"}{print $1, $3, $4, $5, $7, $8, $9}' >> "$OUT_DIR/$file_head.cds_windows"
 	done < "$OUT_DIR/$file_head.transcript_list"
 
-	/usr/local/bedtools/latest/bin/bedtools intersect -v -a $f -b $GFF > "$OUT_DIR/$file_head.snps_not_in_genes"
+	bedtools intersect -v -a $f -b $GFF > "$OUT_DIR/$file_head.snps_not_in_genes"
 
 done

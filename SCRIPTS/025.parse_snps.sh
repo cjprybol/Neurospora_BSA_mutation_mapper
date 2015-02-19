@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd `pwd`
-BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
+BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 FILES="$BASE"/VCF_OUTPUT/*.vcf
 
 
@@ -9,8 +9,15 @@ DIR="$BASE"/VCF_OUTPUT
 
 # find snps that are present in both parents (i.e. are divergent from the reference genome in the same way)
 #	and only output 'CHROM', 'POS', 'ID', 'REF', 'ALT'
+
+
+
+#### here
 cat "$DIR/1_dim-5_49-19.bed_filtered.vcf" "$DIR/2_Mauriceville.bed_filtered.vcf" | gawk '{FS="\t"}{OFS="\t"}{if ($1 ~ /^Supercontig_12.[1-7]$/) print $1,$2,$3,$4,$5}' | sort | uniq -d > "$DIR/both_parents.snps"
 
+
+
+### here
 for f in "$DIR/2_Mauriceville.bed_filtered.vcf"
 do
 	in_file=${f##*/}
