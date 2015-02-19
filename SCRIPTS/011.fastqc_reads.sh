@@ -3,7 +3,8 @@
 # run FASTQC on reads to check quality of data
 cd `pwd`
 BASE="$(dirname "$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )" )"
-FILES="$BASE"/ESSENTIAL/FASTQ/*.fastq
+
+FILES="$(ls "$BASE"/ESSENTIAL/FASTQ/*.fastq)"
 
 OUT_DIR="$BASE/FASTQC_OUT"
 
@@ -21,7 +22,7 @@ for f in $FILES
 do
 
 	echo -e "running FASTQC on \n\t $f"
-        file=${f##*/}
-        /usr/local/fastqc/latest/fastqc --outdir $OUT_DIR $f
+	file=${f##*/}
+	/usr/local/fastqc/latest/fastqc --outdir $OUT_DIR $f
 	
 done
