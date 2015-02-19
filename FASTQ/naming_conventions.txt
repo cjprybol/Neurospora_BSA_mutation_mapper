@@ -1,0 +1,14 @@
+1: files must end in `.fastq`
+	files ending in `.fq` will not work
+2: if using paired end reads, denote the first file of mate pair reads with
+the ending `.R1.fastq`, and the corresponding file with the ending `.R2.fastq`
+
+3: follow standard *nix naming best practices for the head of the filename
+	i.e. [a-z] [A-Z] [0-9] underscores `_` and dashes `-`
+
+examples:
+	single end fastq files:
+		lane3-index01-ATCACG-CPx3.fastq
+	paired end fastq files:
+		1_dim-5_49-19-21583299.R1.fastq
+		1_dim-5_49-19-21583299.R2.fastq
