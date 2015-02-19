@@ -57,7 +57,11 @@ do
 	echo "in1: $f"
 	echo "in2: $folder/$rev"
 
-	# set max distance for paired end to 3000 !! set this to data !! based on quality control data from sequencing center
-	bowtie2 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
+	# set min and max read distance for your data
+	# -I <int> The minimum fragment length for valid paired-end alignments
+	#	the shortest fragment size of your library you want to be considered valid, Default: 0 (essentially imposing no minimum)
+	# -X <int> The maximum fragment length for valid paired-end alignments
+	#	the largest fragment size of your library you want to be considered valid, Default: 500
+	bowtie2 -I 0 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
 
 done

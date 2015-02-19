@@ -17,8 +17,25 @@ fi
 
 IN_DIR="$BASE"/BED_FILTERED_BAM
 
-### here
-for f in $IN_DIR/3_CPX3_pool.bed_filtered.bam $IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam $IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam
+PARENT_FILE="$BASE/ESSENTIAL/FASTQ/parents.txt"
+
+oak_ridge="$( grep "^OR:" $PARENT_FILE | perl -pe 's/OR://' )"
+mauriceville="$( grep "^MV:" $PARENT_FILE | perl -pe 's/MV://' )"
+
+declare -a FILES=($(ls -1 $IN_DIR/*.bam))
+
+
+# drop oak ridge and mauricveille files from list of files
+index=0
+for keyword in ${FILES[@]}; do
+	if [ "$keyword" == "$IN_DIR/$oak_ridge.bed_filtered.bam" ] || [ "$keyword" == "$IN_DIR/$mauriceville.bed_filtered.bam" ]; then
+		unset FILES[$index]
+	fi
+	let index++
+done
+
+
+for f in ${FILES[@]}
 do
 
 	# create variable containing filename but without full directory path

@@ -11,14 +11,15 @@ DIR="$BASE"/VCF_OUTPUT
 #	and only output 'CHROM', 'POS', 'ID', 'REF', 'ALT'
 
 
+PARENT_FILE="$BASE/ESSENTIAL/FASTQ/parents.txt"
 
-#### here
-cat "$DIR/1_dim-5_49-19.bed_filtered.vcf" "$DIR/2_Mauriceville.bed_filtered.vcf" | gawk '{FS="\t"}{OFS="\t"}{if ($1 ~ /^Supercontig_12.[1-7]$/) print $1,$2,$3,$4,$5}' | sort | uniq -d > "$DIR/both_parents.snps"
+oak_ridge="$( grep "^OR:" $PARENT_FILE | perl -pe 's/OR://' )"
+mauriceville="$( grep "^MV:" $PARENT_FILE | perl -pe 's/MV://' )"
+
+cat "$DIR/$oak_ridge.bed_filtered.vcf" "$DIR/$mauriceville.bed_filtered.vcf" | gawk '{FS="\t"}{OFS="\t"}{if ($1 ~ /^Supercontig_12.[1-7]$/) print $1,$2,$3,$4,$5}' | sort | uniq -d > "$DIR/both_parents.snps"
 
 
-
-### here
-for f in "$DIR/2_Mauriceville.bed_filtered.vcf"
+for f in "$DIR/$mauriceville.bed_filtered.vcf"
 do
 	in_file=${f##*/}
 

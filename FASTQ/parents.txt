@@ -1,0 +1,18 @@
+# list the names of the parent samples, without the file extension
+# so that the scripts can dynamically call the parent files
+# and the names don't have to be hardcoded into the scripts
+
+# example:
+#	paired end read fastq files:
+#		1_dim-5_49-19-21583299.R1.fastq
+#		1_dim-5_49-19-21583299.R2.fastq
+#	would list the oak ridge parent strains as:
+#		OR:1_dim-5_49-19-21583299
+#	single end read fastq files:
+#		1_dim-5_49-19-21583299
+#	would list the oak ridge parent strains as:
+#		OR:1_dim-5_49-19-21583299
+
+
+OR:1_dim-5_49-19
+MV:2_Mauriceville

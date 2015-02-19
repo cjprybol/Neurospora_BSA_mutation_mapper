@@ -16,8 +16,26 @@ if [ ! -d "$OUT_DIR" ];
                 echo "> created directory $OUT_DIR"
 fi
 
-### here
-for f in "$IN_DIR/3_CPX3_pool.bed_filtered.bam" "$IN_DIR/4_CPX22_pool_method_1.bed_filtered.bam" "$IN_DIR/5_CPX22_pool_method_2.bed_filtered.bam"
+
+PARENT_FILE="$BASE/ESSENTIAL/FASTQ/parents.txt"
+
+oak_ridge="$( grep "^OR:" $PARENT_FILE | perl -pe 's/OR://' )"
+mauriceville="$( grep "^MV:" $PARENT_FILE | perl -pe 's/MV://' )"
+
+declare -a FILES=($(ls -1 $IN_DIR/*.bam))
+
+
+# drop oak ridge and mauricveille files from list of files
+index=0
+for keyword in ${FILES[@]}; do
+        if [ "$keyword" == "$IN_DIR/$oak_ridge.bed_filtered.bam" ] || [ "$keyword" == "$IN_DIR/$mauriceville.bed_filtered.bam" ]; then
+                unset FILES[$index]
+        fi
+        let index++
+done
+
+
+for f in ${FILES[@]}
 do
 
 	in_file=${f##*/}
@@ -28,9 +46,8 @@ do
 	# assign filter list to variable
 	filter_list="$BASE/ESSENTIAL/FILTER_SITES/$file_head.filter_sites.bed"
 
-### here
-	oak_ridge_file="$IN_DIR/1_dim-5_49-19.bed_filtered.bam"
-	mauriceville_file="$IN_DIR/2_Mauriceville.bed_filtered.bam"
+	oak_ridge_file="$IN_DIR/$oak_ridge.bed_filtered.bam"
+	mauriceville_file="$IN_DIR/$mauriceville.bed_filtered.bam"
 
 	samtools view -hbu -L $filter_list $f | samtools sort - "$OUT_DIR/$file_head.kb_filtered"
 	samtools view -hbu -L $filter_list $oak_ridge_file | samtools sort - "$OUT_DIR/$file_head.OR"
