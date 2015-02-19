@@ -51,7 +51,7 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 
 
 
-### steps to run
+### Prepare environment
 1. add fastq files to `ESSENTIAL/FASTQ`
 	- follow naming conventions specified in `ESSENTIAL/FASTQ/naming_conventions.txt`
 2. specify reference parent and divergent parent filenames in the `ESSENTIAL/FASTQ/parents.txt`
@@ -60,14 +60,17 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 	- if running paired end script, remove the `#` pound sign comment before `sh $FILES/021.paired_end_map_to_OR.sh`
 		- also, edit the min and max fragment size parameters in the `ESSENTIAL/SCRIPTS/021.paired_end_map_to_OR.sh` file for the bowtie2 command (line 65)
 	- if running single end script, remove the `#` pound sign comment before `sh $FILES/021.single_end_map_to_OR.sh`=
-4. run `010.check_data.sh`
-	- check output data in FASTQC_OUT, and clean data as needed
-5. run `020.compare_data_to_genomes.sh` & `030.determine_snp_profiles_for_samples.sh`
-6. graph output data from snp mapping located in `SNP_MAPPING/PARSED_SNP_INFO`
+
+### steps to run
+1. run `010.check_data.sh`
+	- check output data in `FASTQC_OUT`, and clean data as needed
+		- i.e. trim reads, k-mer balance with [Lighter](https://github.com/mourisl/Lighter), etc.
+2. run `020.compare_data_to_genomes.sh` & `030.determine_snp_profiles_for_samples.sh`
+3. graph output data from snp mapping located in `SNP_MAPPING/PARSED_SNP_INFO`
 	- make a scatter plot of RATIO ~ KB for each CONTIG, locate regions of interest
-7. list your regions of interest in .bed format files in the `ESSENTIAL/FILTER_SITES` directory
+4. list your regions of interest in .bed format files in the `ESSENTIAL/FILTER_SITES` directory
 	- follow guidelines listed in the readme.txt file in that folder
-8. run `040.check_for_synonymy.sh`
+5. run `040.check_for_synonymy.sh`
 	- obtain output in `GFF_OVERLAP` and `GFF_OVERLAP/TRANSLATE_CDS` folders
 	- `GFF_OVERLAP/*.all` lists all GFF features that high quality snps overlap
 		- format: {full GFF entry}{full vcf entry for snp}
