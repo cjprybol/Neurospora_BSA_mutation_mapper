@@ -39,7 +39,7 @@ fi
 
 
 # only want to grab the R1 files
-FILES="$(ls "$BASE"/ESSENTIAL/FASTQ/*R1.fastq)"
+FILES="$(ls "$BASE"/LIGHTER_FASTQ/*R1.fastq)"
 
 for f in $FILES
 do
@@ -62,6 +62,7 @@ do
 	#	the shortest fragment size of your library you want to be considered valid, Default: 0 (essentially imposing no minimum)
 	# -X <int> The maximum fragment length for valid paired-end alignments
 	#	the largest fragment size of your library you want to be considered valid, Default: 500
-	bowtie2 -I 0 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
+	# -p/--threads <int> number of alignment threads to launch (1)
+	bowtie2 -p 4 -I 0 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
 
 done

@@ -6,7 +6,7 @@ BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 
 FILES="$(ls "$BASE"/ESSENTIAL/FASTQ/*.fastq)"
 
-OUT_DIR="$BASE/FASTQC_OUT"
+OUT_DIR="$BASE/FASTQC_OUT_PRE"
 
 # if output folder does not exist, create it
 if [ ! -d "$OUT_DIR" ];
