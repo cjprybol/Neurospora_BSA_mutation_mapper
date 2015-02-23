@@ -38,7 +38,7 @@ fi
 ##############################################################
 
 
-FILES="$(ls "$BASE"/LIGHTER_FASTQ/*.fastq)"
+FILES="$(ls "$BASE"/LIGHTER_FASTQ/*.cor.fq)"
 
 for f in $FILES
 do
@@ -50,6 +50,6 @@ do
 	# get base name without extension
 	out=$(echo "$file" | perl -pe 's/\.fastq//')
 
-	bowtie2 -p 4 -x "$BASE/OR_INDEX/or_index" -1 $f | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
+	bowtie2 -p 4 -x "$BASE/OR_INDEX/or_index" -1 $f --met-file "$BAM_DIR/$out.metrics" | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
 
 done

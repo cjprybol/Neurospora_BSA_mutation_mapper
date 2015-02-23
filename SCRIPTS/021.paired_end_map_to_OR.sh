@@ -39,7 +39,7 @@ fi
 
 
 # only want to grab the R1 files
-FILES="$(ls "$BASE"/LIGHTER_FASTQ/*R1.fastq)"
+FILES="$(ls "$BASE"/LIGHTER_FASTQ/*R1.cor.fq)"
 
 for f in $FILES
 do
@@ -52,7 +52,7 @@ do
 	base=$(echo "$file" | perl -pe 's/\.R1.*//')
 
 	# get reverse file
-	rev="$base.R2.fastq"
+	rev="$base.R2.cor.fq"
 
 	echo "in1: $f"
 	echo "in2: $folder/$rev"
@@ -63,6 +63,7 @@ do
 	# -X <int> The maximum fragment length for valid paired-end alignments
 	#	the largest fragment size of your library you want to be considered valid, Default: 500
 	# -p/--threads <int> number of alignment threads to launch (1)
-	bowtie2 -p 4 -I 0 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
+	#   --met-file <path>  send metrics to file at <path> (off)
+	bowtie2 -p 4 -I 0 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" --met-file "$BAM_DIR/$base.metrics" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
 
 done
