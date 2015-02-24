@@ -10,4 +10,4 @@ echo $FILES
 # run scripts as
 #	$FILES/{ script_name_here }
 
-sh $FILES/040.check_for_synonymy.sh
+$FILES/040.check_for_synonymy.sh

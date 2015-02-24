@@ -10,6 +10,6 @@ echo $FILES
 # run scripts as
 #	$FILES/{ script_name_here }
 
-sh $FILES/010.check_data.sh
-sh $FILES/020.compare_data_to_genomes.sh
-sh $FILES/030.determine_snp_profiles_for_samples.sh
+$FILES/010.check_data.sh
+$FILES/020.compare_data_to_genomes.sh
+$FILES/030.determine_snp_profiles_for_samples.sh

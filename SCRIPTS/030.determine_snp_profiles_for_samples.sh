@@ -8,5 +8,5 @@ FILES="$BASE/ESSENTIAL/SCRIPTS"
 # run scripts as
 #	$FILES/{ script_name_here }
 
-sh $FILES/032.map_snps_for_samples.sh
-sh $FILES/033.parse_snp_data.sh
+$FILES/032.map_snps_for_samples.sh
+$FILES/033.parse_snp_data.sh
