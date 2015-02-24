@@ -40,14 +40,14 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 2. specify reference parent and divergent parent filenames in the `ESSENTIAL/FASTQ/parents.txt`
 3. edit `ESSENTIAL/SCRIPTS/010.check_data.sh` to run proper fastq error correction script
 	- this git repo contains scripts for paired end and single end datasets
-	- if using paired end data, remove the `#` pound sign comment before `sh $FILES/012.lighter_paired_end.sh`
-	- if using single end data, remove the `#` pound sign comment before `sh $FILES/012.lighter_single_end.sh`
+	- if using paired end data, remove the `#` pound sign comment before `$FILES/012.lighter_paired_end.sh`
+	- if using single end data, remove the `#` pound sign comment before `$FILES/012.lighter_single_end.sh`
 	- ensure the alternate script you are not running is commented out with a `#`
 3. edit `ESSENTIAL/SCRIPTS/020.compare_data_to_genomes.sh` to run proper mapping script
 	- this git repo contains scripts for mapping paired end and single end reads
-	- if running paired end script, remove the `#` pound sign comment before `sh $FILES/021.paired_end_map_to_OR.sh`
+	- if running paired end script, remove the `#` pound sign comment before `$FILES/021.paired_end_map_to_OR.sh`
 		- also, edit the min and max fragment size parameters in the `ESSENTIAL/SCRIPTS/021.paired_end_map_to_OR.sh` file for the bowtie2 command (line 65)
-	- if running single end script, remove the `#` pound sign comment before `sh $FILES/021.single_end_map_to_OR.sh`
+	- if running single end script, remove the `#` pound sign comment before `$FILES/021.single_end_map_to_OR.sh`
 	- ensure the alternate script you are not running is commented out with a `#`
 
 ### steps to run
