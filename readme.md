@@ -28,6 +28,8 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 	- acquire by running `conda install biopython`
 		- will need to restart bash session to activate Anaconda if that was just installed
 - [Samtools](http://www.htslib.org/)
+- [bcftools](http://www.htslib.org/)
+- [htslib](http://www.htslib.org/)
 - [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
 - [Bedtools](http://bedtools.readthedocs.org/en/latest/)
 - [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
