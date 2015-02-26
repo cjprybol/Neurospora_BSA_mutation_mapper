@@ -58,6 +58,6 @@ do
 	# python3 032.map_snps_for_samples.py [sam_file] [out_file] [snp_list]
 	python3 032.map_snps_for_samples.py "$OUT_DIR/$sam_temp" "$OUT_DIR/$out_file" "$BASE/VCF_OUTPUT/2_Mauriceville.parsed_snps.out"
 
-	rm "$BASE/OR_MAP_BAM_CLEANED/$sam_temp"
+	rm "$OUT_DIR/$sam_temp"
 
 done
