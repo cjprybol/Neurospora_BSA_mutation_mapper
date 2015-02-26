@@ -48,7 +48,7 @@ do
 	file=${f##*/}
 
 	# get base name without extension
-	out=$(echo "$file" | perl -pe 's/\.fastq//')
+	out=$(echo "$file" | perl -pe 's/\.cor\.fq//')
 
 	bowtie2 -p 4 -x "$BASE/OR_INDEX/or_index" -U $f --met-file "$BAM_DIR/$out.metrics" 2> "$BAM_DIR/$base.summary" | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
 
