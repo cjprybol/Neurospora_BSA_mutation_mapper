@@ -46,3 +46,5 @@ do
 	rm $f.cleaned
 
 done
+
+rm "$DIR/both_parents.snps"
