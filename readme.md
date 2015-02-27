@@ -39,6 +39,7 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 ### Prepare environment
 1. add fastq files to `ESSENTIAL/FASTQ`
 	- follow naming conventions specified in `ESSENTIAL/FASTQ/naming_conventions.txt`
+	- fastq files must be gzip-ed
 2. specify reference parent and divergent parent filenames in the `ESSENTIAL/FASTQ/parents.txt`
 3. edit `ESSENTIAL/SCRIPTS/010.check_data.sh` to run proper fastq error correction script
 	- this git repo contains scripts for paired end and single end datasets
