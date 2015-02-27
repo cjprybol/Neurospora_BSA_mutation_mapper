@@ -64,6 +64,6 @@ do
 	#	the largest fragment size of your library you want to be considered valid, Default: 500
 	# -p/--threads <int> number of alignment threads to launch (1)
 	#   --met-file <path>  send metrics to file at <path> (off)
-	bowtie2 -p 4 -I 0 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" --met-file "$BAM_DIR/$base.metrics" 2> "$BAM_DIR/$base.summary" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
+	bowtie2 -p 8 -I 0 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" --met-file "$BAM_DIR/$base.metrics" 2> "$BAM_DIR/$base.summary" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
 
 done
