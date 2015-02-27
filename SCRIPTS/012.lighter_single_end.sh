@@ -4,7 +4,7 @@
 cd `pwd`
 BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 
-FILES="$(ls "$BASE"/ESSENTIAL/FASTQ/*.fastq)"
+FILES="$(ls "$BASE"/ESSENTIAL/FASTQ/*.fastq.gz)"
 
 OUT_DIR="$BASE/LIGHTER_FASTQ"
 

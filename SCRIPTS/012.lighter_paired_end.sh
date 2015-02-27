@@ -4,7 +4,7 @@
 cd `pwd`
 BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 
-FILES="$(ls "$BASE"/ESSENTIAL/FASTQ/*R1.fastq)"
+FILES="$(ls "$BASE"/ESSENTIAL/FASTQ/*R1.fastq.gz)"
 
 OUT_DIR="$BASE/LIGHTER_FASTQ"
 
@@ -25,7 +25,7 @@ do
 
 	
 	forward_head=${f##*/}
-	reverse="$( echo $f | perl -pe 's/\.R1.fastq$/\.R2.fastq/' )"
+	reverse="$( echo $f | perl -pe 's/\.R1\.fastq\.gz/\.R2\.fastq\.gz/' )"
 	reverse_head=${reverse##*/}
 	echo -e "running Lighter on \n\t $forward_head \t $reverse_head" >> "$OUT_DIR/lighter.out"
 

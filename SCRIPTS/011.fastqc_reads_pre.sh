@@ -4,7 +4,7 @@
 cd `pwd`
 BASE="$( dirname "$( dirname "$( echo `pwd` )" )" )"
 
-FILES="$(ls "$BASE"/ESSENTIAL/FASTQ/*.fastq)"
+FILES="$(ls "$BASE"/ESSENTIAL/FASTQ/*.fastq.gz)"
 
 OUT_DIR="$BASE/FASTQC_OUT_PRE"
 
@@ -23,6 +23,6 @@ do
 
 	echo -e "running FASTQC on \n\t $f"
 	file=${f##*/}
-	fastqc --outdir $OUT_DIR $f
+	gunzip -c $f | fastqc --outdir $OUT_DIR -
 	
 done

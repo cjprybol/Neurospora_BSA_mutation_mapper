@@ -1,6 +1,8 @@
 # sequencing files
 *.fastq
+*.fastq.gz
 *.fq
+*.fq.gz
 
 # heterochromatin files
 #*.bed
