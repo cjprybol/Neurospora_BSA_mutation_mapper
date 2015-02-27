@@ -23,6 +23,6 @@ do
 
 	echo -e "running FASTQC on \n\t $f"
 	file=${f##*/}
-	gunzip -c $f | fastqc --outdir $OUT_DIR -
+	fastqc --outdir $OUT_DIR $f
 	
 done
