@@ -39,7 +39,7 @@ fi
 
 
 # only want to grab the R1 files
-FILES="$(ls "$BASE"/LIGHTER_FASTQ/*R1.cor.fq.gz)"
+FILES="$(ls "$BASE"/LIGHTER_FASTQ/*R1.fastq.cor.fq.gz)"
 
 for f in $FILES
 do
@@ -52,7 +52,7 @@ do
 	base=$(echo "$file" | perl -pe 's/\.R1.*//')
 
 	# get reverse file
-	rev="$base.R2.cor.fq.gz"
+	rev="$base.R2.fastq.cor.fq.gz"
 
 	echo "in1: $f"
 	echo "in2: $folder/$rev"
