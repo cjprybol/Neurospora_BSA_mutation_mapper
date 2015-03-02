@@ -56,7 +56,7 @@ do
 
 	echo "cleaning"
 	# python3 032.map_snps_for_samples.py [sam_file] [out_file] [snp_list]
-	python3 032.map_snps_for_samples.py "$OUT_DIR/$sam_temp" "$OUT_DIR/$out_file" "$BASE/VCF_OUTPUT/2_Mauriceville.parsed_snps.out"
+	python3 032.map_snps_for_samples.py "$OUT_DIR/$sam_temp" "$OUT_DIR/$out_file" "$BASE/VCF_OUTPUT/$mauriceville.parsed_snps.out"
 
 	rm "$OUT_DIR/$sam_temp"
 
