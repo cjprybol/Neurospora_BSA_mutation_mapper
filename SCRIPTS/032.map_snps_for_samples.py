@@ -97,4 +97,4 @@ for i in range(1,8):
 			alt_match_count += alt_match
 			read_mismatch_count += no_match
 		writer.writerow(['CONTIG', i ,'POS', snp['POS'], 'ref_match_count:',ref_match_count,'alt_match_count:',alt_match_count,'read_mismatch_count:',read_mismatch_count ])
-		print('CONTIG', i ,'POS', snp['POS'], 'ref_match_count:',ref_match_count,'alt_match_count:',alt_match_count,'read_mismatch_count:',read_mismatch_count,sep="\t" )
+#		print('CONTIG', i ,'POS', snp['POS'], 'ref_match_count:',ref_match_count,'alt_match_count:',alt_match_count,'read_mismatch_count:',read_mismatch_count,sep="\t" )
