@@ -48,8 +48,7 @@ do
 
 	bam2cfg.pl -g -h tumor.bam normal.bam
 	bam2cfg.pl "$oak_ridge_bam" "$f" > "$OUT_DIR/$in_file.cfg"
-	breakdancer_max -g  "$OUT_DIR/$in_file.bed" "$OUT_DIR/$in_file.cfg"
-	breakdancer_max "$OUT_DIR/$in_file.cfg" > "$OUT_DIR/$in_file.breakdancer_out"
+	breakdancer_max -g  "$OUT_DIR/$in_file.bed" "$OUT_DIR/$in_file.cfg" > "$OUT_DIR/$in_file.breakdancer_out"
 
 	# create pindel config file
 	perl -e 'print reverse <>' "$OUT_DIR/$in_file.cfg" > "$OUT_DIR/$in_file.pindel_config"
