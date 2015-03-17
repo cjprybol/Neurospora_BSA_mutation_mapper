@@ -49,11 +49,11 @@ do
 	bam2cfg.pl -g -h tumor.bam normal.bam
 	bam2cfg.pl "$oak_ridge_bam" "$f" > "$OUT_DIR/$in_file.cfg"
 	breakdancer_max -g  "$OUT_DIR/$in_file.bed" "$OUT_DIR/$in_file.cfg"
+	breakdancer_max "$OUT_DIR/$in_file.cfg" > "$OUT_DIR/$in_file.breakdancer_out"
 
 	# create pindel config file
 	perl -e 'print reverse <>' "$OUT_DIR/$in_file.cfg" > "$OUT_DIR/$in_file.pindel_config"
-	awk '{OFS="\t"}{print $3,$9}' "$OUT_DIR/$in_file.pindel_config" | perl -pe 's/^map://g' | perl -pe 's/mean://g' \
-	> "$OUT_DIR/tmp"
+	awk '{OFS="\t"}{print $3,$9}' "$OUT_DIR/$in_file.pindel_config" | perl -pe 's/^map://g' | perl -pe 's/mean://g' > "$OUT_DIR/tmp"
 
 	input_sample_name=$( echo $in_file | perl -pe 's/_pool.*//g' )
 	
