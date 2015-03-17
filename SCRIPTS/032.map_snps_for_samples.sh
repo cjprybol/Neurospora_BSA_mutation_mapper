@@ -51,10 +51,9 @@ do
 	#	if reads are on supercontig_12.1 thru 7, return the read_id, supercontig, position, and sequence |
 	#	drop 'Supercontig_12.' and leave only the trailing number >
 	#	save to file
-	echo "writing sam"
-	samtools view $f | awk '{OFS="\t"}{ if ($3 ~ /^Supercontig_12.[1-7]$/) print $1,$3,$4,$10}' | sed 's/Supercontig_12\.//'> "$OUT_DIR/$sam_temp"
 
-	echo "cleaning"
+	bedtools intersect -wa -ubam -a $f -b "$BASE/VCF_OUTPUT/$mauriceville.bed_filtered.cleaned.vcf" | samtools view - | awk '{OFS="\t"}{ if ($3 ~ /^Supercontig_12.[1-7]$/) print $1,$3,$4,$10}' | sed 's/Supercontig_12\.//'> "$OUT_DIR/$sam_temp"
+
 	# python3 032.map_snps_for_samples.py [sam_file] [out_file] [snp_list]
 	python3 032.map_snps_for_samples.py "$OUT_DIR/$sam_temp" "$OUT_DIR/$out_file" "$BASE/VCF_OUTPUT/$mauriceville.parsed_snps.out"
 

@@ -32,7 +32,10 @@ print('saving to:', OUT_FILE, sep='\t')
 for i in range(1,8):
 
 	sam_chrom_sub = sam_data[sam_data.CONTIG == i]
+	sam_data = sam_data[sam_data.CONTIG != i]
+
 	snp_chrom_sub = snp_data[snp_data.CONTIG == i]
+	snp_data = snp_data[snp_data.CONTIG != i]
 
 	for snp_index, snp in snp_chrom_sub.iterrows():
 
@@ -54,6 +57,7 @@ for i in range(1,8):
 			larger_snp = 'ALT'
 
 		sam_snp_sub = sam_chrom_sub[(sam_chrom_sub.POS <= snp['POS']) & (sam_chrom_sub.END_POS >= (snp['POS'] + extra_length))]
+
 		for matched_read_index, matched_read in sam_snp_sub.iterrows():
 			offset = snp['POS'] - matched_read['POS']
 			base = matched_read['SEQ'][offset:offset+extra_length+1]
