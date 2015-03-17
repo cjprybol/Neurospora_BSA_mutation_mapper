@@ -34,6 +34,8 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 - [Bedtools](http://bedtools.readthedocs.org/en/latest/)
 - [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - [Lighter](https://github.com/mourisl/Lighter)
+- [BreakDancer](http://gmt.genome.wustl.edu/packages/breakdancer/)
+- [Pindel](http://gmt.genome.wustl.edu/packages/pindel/)
 
 
 ### Prepare environment
@@ -66,3 +68,4 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 	- `GFF_OVERLAP/*.snps_not_in_genes` lists all snps that fall in euchromatin regions but do not overlap any GFF features
 		- these may hit promotors or other factors outside the gene body, and may be of interest if a mutation is not found in the GFF features
 	- `GFF_OVERLAP/TRANSLATE_CDS/*.translated_CDS` outputs the translated AA sequence for all snps falling in coding sequences, and shows if the snp produces a non-synonymous output
+	- `SV_DETECTION` contains BreakDancer and Pindel output to detect possible structural variants
