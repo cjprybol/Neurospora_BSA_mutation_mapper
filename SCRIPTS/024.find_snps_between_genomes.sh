@@ -17,9 +17,17 @@ fi
 
 REF_GENOME_DIR="$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge"
 IN_DIR="$BASE/BED_FILTERED_BAM"
-FILES="$BASE"/BED_FILTERED_BAM/*.bam
 
-for f in $FILES
+
+PARENT_FILE="$BASE/ESSENTIAL/FASTQ/parents.txt"
+
+oak_ridge="$( grep "^OR:" $PARENT_FILE | perl -pe 's/OR://' )"
+mauriceville="$( grep "^MV:" $PARENT_FILE | perl -pe 's/MV://' )"
+
+
+
+#for f in $FILES
+for f in "$IN_DIR/$oak_ridge.bed_filtered.bam" "$IN_DIR/$mauriceville.bed_filtered.bam"
 do
 
         # create variable with filename without full directory path
@@ -37,10 +45,6 @@ do
 	#	-o	output filename
 
 	samtools mpileup -ugf "$REF_GENOME_DIR/neurospora_crassa_or74a_12_supercontigs.fasta" "$IN_DIR/$in_file" | bcftools call -vmO z -o "$OUT_VCF_DIR/$out_vcf.gz"
-	tabix -p vcf "$OUT_VCF_DIR/$out_vcf.gz"
-	bcftools stats -F "$REF_GENOME_DIR/neurospora_crassa_or74a_12_supercontigs.fasta" -s - "$OUT_VCF_DIR/$out_vcf.gz" > "$OUT_VCF_DIR/$out_vcf.gz.stats"
-	
 	gunzip -f "$OUT_VCF_DIR/$out_vcf.gz"
-	rm "$OUT_VCF_DIR/$out_vcf.gz.tbi"
 
 done
