@@ -8,7 +8,7 @@ FILES="$BASE/ESSENTIAL/SCRIPTS"
 # run scripts as
 #	$FILES/{ script_name_here }
 
-$FILES/041.filter_sam_by_kb.sh
+$FILES/041.filter_bam_by_kb.sh
 $FILES/042.find_snps_between_genomes.sh
 $FILES/043.parse_snps.sh
 $FILES/044.gff_overlap.sh
