@@ -41,8 +41,6 @@ do
 	in_file=${f##*/}
 	file_head=$(echo "$in_file" | sed -e 's/\.bed_filtered\.bam//')
 
-	echo $file_head
-
 	# assign filter list to variable
 	filter_list="$BASE/ESSENTIAL/FILTER_SITES/$file_head.filter_sites.bed"
 
