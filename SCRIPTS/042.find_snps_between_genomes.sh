@@ -41,6 +41,6 @@ do
 	tabix -p vcf "$OUT_DIR/$out_vcf.gz"
 	bcftools stats -F "$REF_GENOME_DIR/neurospora_crassa_or74a_12_supercontigs.fasta" -s - "$OUT_DIR/$out_vcf.gz" > "$OUT_DIR/$out_vcf.gz.stats"
 	
-	gunzip "$OUT_DIR/$out_vcf.gz"
+	gunzip -f "$OUT_DIR/$out_vcf.gz"
 
 done
