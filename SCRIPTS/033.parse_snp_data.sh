@@ -20,16 +20,8 @@ do
 
 	out_base=$(echo "$file" | perl -pe 's/\.bed_filtered\.snp_map\.out//')
 
-	window=5
-	slide=1
+	echo -e "CONTIG\tPOS\tREF\tALT\tMIS" > "$OUT_DIR/$out_base.snp_counts"
 
-	out_file="$out_base.$window""kb_window"
-
-	echo -e "CONTIG\tPOS\tREF\tALT\tMIS" > "$OUT_DIR/$out_base.temp"
-	grep 'CONTIG' $f | awk '{OFS="\t"}{print $2,$4,$6,$8,$10}' | sort -k1n,1 -k2n,2 >> "$OUT_DIR/$out_base.temp" 
-
-	python3 033.bucket_count.py "$OUT_DIR/$out_base.temp" "$OUT_DIR/$out_file" $window $slide
-
-	rm "$OUT_DIR/$out_base.temp"
+	grep '^CONTIG' $f | awk '{FS="\t"}{OFS="\t"}{print $2,$4,$6,$8,$10}' >> "$OUT_DIR/$out_base.snp_counts"
 
 done
