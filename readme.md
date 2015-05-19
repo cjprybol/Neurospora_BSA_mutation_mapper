@@ -21,12 +21,18 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 	- must be the default system python (required by Bowtie for mapping reads to genome)
 - Python3
 	- recommended installation method is to simply get [Anaconda](http://continuum.io/downloads#34)
-- pandas for python3
-	- included in Anaconda
-- BioPython
-	- not included in Anaconda
-	- acquire by running `conda install biopython`
-		- will need to restart bash session to activate Anaconda if that was just installed
+		- restart bash session after initial installation
+	- **packages**	
+		- [pandas](http://pandas.pydata.org/)
+			- included in Anaconda
+		- [BioPython](http://biopython.org/wiki/Main_Page)
+			- not included in Anaconda
+			- acquire by running `conda install biopython`
+- R
+	- version 3+
+	- **packages**
+		- [ggplot2](http://ggplot2.org/)
+		- [gridExtra](http://cran.r-project.org/web/packages/gridExtra/index.html)
 - [Samtools](http://www.htslib.org/)
 - [bcftools](http://www.htslib.org/)
 - [htslib](http://www.htslib.org/)
