@@ -7,6 +7,7 @@ data = read.table(args[1],sep='\t',colClasses=c(rep("numeric",5)),header=TRUE, s
 save_path = args[2]
 file_base = args[3]
 
+# the supercontig/chromsome #, position on that contig, # of reads matching reference snp, # matching alternate snp, # matching neither (mismatch)
 colnames(data) <- c("CONTIG", "POS", "REF", "ALT", "MIS")
 
 data$TOTAL = data$REF+data$ALT
@@ -28,8 +29,7 @@ p1 <- ggplot(chrom1, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point() + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank()) +
 		labs(x = "Position (kb)", title="Chromosome 1") +
 		stat_smooth()
@@ -39,8 +39,7 @@ p2 <- ggplot(chrom2, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point() + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank()) +
 		labs(x = "Position (kb)", title="Chromosome 2") +
 		stat_smooth()
@@ -50,8 +49,7 @@ p3 <- ggplot(chrom3, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point() + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank()) +
 		labs(x = "Position (kb)", title="Chromosome 3") +
 		stat_smooth()
@@ -71,8 +69,7 @@ p5 <- ggplot(chrom5, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point() + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank()) +
 		labs(x = "Position (kb)", title="Chromosome 5") +
 		stat_smooth()
@@ -81,8 +78,7 @@ p6 <- ggplot(chrom6, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point() + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank()) +
 		labs(x = "Position (kb)", title="Chromosome 6") +
 		stat_smooth()
@@ -91,8 +87,7 @@ p7 <- ggplot(chrom7, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point() + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank()) +
 		labs(x = "Position (kb)", title="Chromosome 7") +
 		stat_smooth()
@@ -112,8 +107,7 @@ p1 <- ggplot(chrom1, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point(size = point_size) + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank(), legend.position = "none") +
 		labs(x = "Position (kb)", title="Chromosome 1") +
 		stat_smooth()
@@ -122,8 +116,7 @@ p1_legend <- ggplot(chrom1, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL
 		geom_point() + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank(), legend.box = "horizontal") +
 		labs(x = "Position (kb)", title="Chromosome 1") +
 		stat_smooth()
@@ -132,8 +125,7 @@ p2 <- ggplot(chrom2, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point(size = point_size) + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank(), legend.position = "none") +
 		labs(x = "Position (kb)", title="Chromosome 2") +
 		stat_smooth()
@@ -143,8 +135,7 @@ p3 <- ggplot(chrom3, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point(size = point_size) + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank(), legend.position = "none") +
 		labs(x = "Position (kb)", title="Chromosome 3") +
 		stat_smooth()
@@ -164,8 +155,7 @@ p5 <- ggplot(chrom5, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point(size = point_size) + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank(), legend.position = "none") +
 		labs(x = "Position (kb)", title="Chromosome 5") +
 		stat_smooth()
@@ -174,8 +164,7 @@ p6 <- ggplot(chrom6, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point(size = point_size) + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank(), legend.position = "none") +
 		labs(x = "Position (kb)", title="Chromosome 6") +
 		stat_smooth()
@@ -184,8 +173,7 @@ p7 <- ggplot(chrom7, aes(x = KB, y = RATIO, colour = RATIO, alpha = TOTAL)) +
 		geom_point(size = point_size) + 
 		ylim(0, 100) +
 		scale_colour_gradient2(name = "% Oak Ridge", low = "#0000FF", mid = "#404040", high ="#FF0000", midpoint = median(data$RATIO), space = "rgb", limits = c(0,100)) +
-		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)
-) +
+		scale_alpha_continuous(name = "Read Count ~\nTransparency", limits = c(0,alpha_max), guide = guide_legend(reverse=TRUE)) +
 		theme(axis.ticks = element_blank(), axis.title.y = element_blank(), legend.position = "none") +
 		labs(x = "Position (kb)", title="Chromosome 7") +
 		stat_smooth()
@@ -199,7 +187,5 @@ g_legend<-function(a.gplot){
 }
 
 legend <- g_legend(p1_legend)
-
 multiplot <- arrangeGrob(p1,p2,p3,p4,p5,p6,p7,legend, ncol = 2)
-
 ggsave(filename=paste(save_path, file_base, "_multiplot.png", sep=""), plot=multiplot, width=8.5, height=11, units="in")
