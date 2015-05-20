@@ -11,10 +11,10 @@ DIR="$BASE"/VCF_OUTPUT
 #	and only output 'CHROM', 'POS', 'ID', 'REF', 'ALT'
 
 
-PARENT_FILE="$BASE/ESSENTIAL/FASTQ/parents.txt"
+CONFIG_FILE="$BASE/ESSENTIAL/config.txt"
 
-oak_ridge="$( grep "^OR:" $PARENT_FILE | perl -pe 's/OR://' )"
-mauriceville="$( grep "^MV:" $PARENT_FILE | perl -pe 's/MV://' )"
+oak_ridge="$( grep "^OR:" $CONFIG_FILE | perl -pe 's/OR://' )"
+mauriceville="$( grep "^MV:" $CONFIG_FILE | perl -pe 's/MV://' )"
 
 cat "$DIR/$oak_ridge.bed_filtered.vcf" "$DIR/$mauriceville.bed_filtered.vcf" | gawk '{FS="\t"}{OFS="\t"}{if ($1 ~ /^Supercontig_12.[1-7]$/) print $1,$2,$3,$4,$5}' | sort | uniq -d > "$DIR/both_parents.snps"
 

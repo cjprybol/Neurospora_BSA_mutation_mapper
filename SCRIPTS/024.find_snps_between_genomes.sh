@@ -19,10 +19,10 @@ REF_GENOME_DIR="$BASE/ESSENTIAL/REF_GENOMES/Ncrassa_OakRidge"
 IN_DIR="$BASE/BED_FILTERED_BAM"
 
 
-PARENT_FILE="$BASE/ESSENTIAL/FASTQ/parents.txt"
+CONFIG_FILE="$BASE/ESSENTIAL/config.txt"
 
-oak_ridge="$( grep "^OR:" $PARENT_FILE | perl -pe 's/OR://' )"
-mauriceville="$( grep "^MV:" $PARENT_FILE | perl -pe 's/MV://' )"
+oak_ridge="$( grep "^OR:" $CONFIG_FILE | perl -pe 's/OR://' )"
+mauriceville="$( grep "^MV:" $CONFIG_FILE | perl -pe 's/MV://' )"
 
 
 

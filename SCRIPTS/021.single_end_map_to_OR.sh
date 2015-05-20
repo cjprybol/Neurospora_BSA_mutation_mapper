@@ -37,6 +37,8 @@ fi
 #	map fasta files to bwa reference genome files
 ##############################################################
 
+CONFIG_FILE="$BASE/ESSENTIAL/config.txt"
+cores="$( grep "^cores:" $CONFIG_FILE | perl -pe 's/cores://' )"
 
 FILES="$(ls "$BASE"/LIGHTER_FASTQ/*.cor.fq.gz)"
 
@@ -50,6 +52,6 @@ do
 	# get base name without extension
 	out=$(echo "$file" | perl -pe 's/\.cor\.fq\.gz//')
 
-	bowtie2 -p 8 -x "$BASE/OR_INDEX/or_index" -U $f --met-file "$BAM_DIR/$out.metrics" 2> "$BAM_DIR/$base.summary" | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
+	bowtie2 -p $cores -x "$BASE/OR_INDEX/or_index" -U $f --met-file "$BAM_DIR/$out.metrics" 2> "$BAM_DIR/$base.summary" | samtools view -buS - | samtools sort - "$BAM_DIR/$out.sorted"
 
 done

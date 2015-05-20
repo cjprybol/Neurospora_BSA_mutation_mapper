@@ -16,3 +16,24 @@
 
 OR:1_dim-5_49-19-21583299
 MV:2_Mauriceville-21583300
+
+
+# specify whether the reads generated are paired end of single end
+# se for single-end, pe for paired end
+# e.g.:
+#	read-type:se
+#	read-type:pe
+
+read-type:pe
+
+# specify minimum and maximum fragment sizes
+# only necessary for paired-end mapping!
+# if unsure, set these parameters to the defaults
+#	min:0
+#	max:500
+min:0 
+max:3000
+
+# specify number of processor cores available for parallelization
+cores:8
+

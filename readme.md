@@ -48,7 +48,7 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 1. add fastq files to the directory `{path to working directory}/ESSENTIAL/FASTQ`
 	- follow naming conventions specified in `{path to working directory}/ESSENTIAL/FASTQ/naming_conventions.txt`
 	- fastq files must be gzip-ed
-2. specify reference parent and divergent parent filenames in the `{path to working directory}/ESSENTIAL/FASTQ/parents.txt` file
+2. specify reference parent and divergent parent filenames, read-type (single- or paired-end), # of available cores, and min and max library fragment sizes in the `{path to working directory}/ESSENTIAL/config.txt` file
 3. edit `{path to working directory}/ESSENTIAL/SCRIPTS/010.check_data.sh` to specify single-end or paired-end reads
 	- if using paired end data, remove the `#` comment before `$FILES/012.lighter_paired_end.sh`
 	- if using single end data, remove the `#` comment before `$FILES/012.lighter_single_end.sh`

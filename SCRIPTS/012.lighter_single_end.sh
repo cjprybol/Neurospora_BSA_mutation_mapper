@@ -18,6 +18,8 @@ fi
 # write blank file to append output data to
 > "$OUT_DIR/lighter.out"
 
+CONFIG_FILE="$BASE/ESSENTIAL/config.txt"
+cores="$( grep "^cores:" $CONFIG_FILE | perl -pe 's/cores://' )"
 
 # run ligther on all fastq files
 for f in $FILES
@@ -34,6 +36,6 @@ do
 	# -trim: allow trimming at ends of low-quality
 	# -stable: sequentialize the sampling stage, output the same result with different runs (default: false)
 	# -t num_of_threads: number of threads to use (default: 1)
-	lighter -r "$f" -K 19 41020000 -od "$OUT_DIR" -trim -stable -t 8 2>> "$OUT_DIR/lighter.out"
+	lighter -r "$f" -K 19 41020000 -od "$OUT_DIR" -trim -stable -t $cores 2>> "$OUT_DIR/lighter.out"
 	
 done

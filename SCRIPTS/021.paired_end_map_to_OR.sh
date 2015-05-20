@@ -37,6 +37,12 @@ fi
 #	map fasta files to bwa reference genome files
 ##############################################################
 
+CONFIG_FILE="$BASE/ESSENTIAL/config.txt"
+
+cores="$( grep "^cores:" $CONFIG_FILE | perl -pe 's/cores://' )"
+min_fragment_size="$( grep "^min:" $CONFIG_FILE | perl -pe 's/min://' )"
+max_fragment_size="$( grep "^max:" $CONFIG_FILE | perl -pe 's/max://' )"
+
 
 # only want to grab the R1 files
 FILES="$(ls "$BASE"/LIGHTER_FASTQ/*R1.cor.fq.gz)"
@@ -64,6 +70,6 @@ do
 	#	the largest fragment size of your library you want to be considered valid, Default: 500
 	# -p/--threads <int> number of alignment threads to launch (1)
 	#   --met-file <path>  send metrics to file at <path> (off)
-	bowtie2 -p 8 -I 0 -X 3000 -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" --met-file "$BAM_DIR/$base.metrics" 2> "$BAM_DIR/$base.summary" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
+	bowtie2 -p $cores -I $min_fragment_size -X $max_fragment_size -x "$INDEX_DIR/or_index" -1 $f -2 "$folder/$rev" --met-file "$BAM_DIR/$base.metrics" 2> "$BAM_DIR/$base.summary" | samtools view -buS - | samtools sort - "$BAM_DIR/$base.sorted"
 
 done
