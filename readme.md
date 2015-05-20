@@ -17,7 +17,6 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 
 ### required software (all must be in user path)
 - Perl 5
-	- used `perl 5, version 14, subversion 1 (v5.14.1) built for x86_64-linux-thread-multi`
 - Python2
 	- must be the default system python (required by Bowtie for mapping reads to genome)
 - Python3
