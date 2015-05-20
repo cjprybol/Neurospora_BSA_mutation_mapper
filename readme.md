@@ -49,13 +49,6 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 	- follow naming conventions specified in `{path to working directory}/ESSENTIAL/FASTQ/naming_conventions.txt`
 	- fastq files must be gzip-ed
 2. specify reference parent and divergent parent filenames, read-type (single- or paired-end), # of available cores, and min and max library fragment sizes in the `{path to working directory}/ESSENTIAL/config.txt` file
-3. edit `{path to working directory}/ESSENTIAL/SCRIPTS/010.check_data.sh` to specify single-end or paired-end reads
-	- if using paired end data, remove the `#` comment before `$FILES/012.lighter_paired_end.sh`
-	- if using single end data, remove the `#` comment before `$FILES/012.lighter_single_end.sh`
-3. edit `{path to working directory}/ESSENTIAL/SCRIPTS/020.compare_data_to_genomes.sh` to specify single-end or paired-end reads
-	- if running paired end script, remove the `#` comment before `$FILES/021.paired_end_map_to_OR.sh`
-		- also, edit the min and max fragment size of the input library in the `{path to working directory}/ESSENTIAL/SCRIPTS/021.paired_end_map_to_OR.sh` file for the bowtie2 mapping command (line 65)
-	- if running single end script, remove the `#` comment before `$FILES/021.single_end_map_to_OR.sh`
 
 ### steps to run
 1. run `{path to working directory}/ESSENTIAL/SCRIPTS/001.master.sh`
