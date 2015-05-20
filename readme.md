@@ -1,11 +1,12 @@
-##DIM5 Analysis
+# Neurospora BSA mutation mapper
 ---
 
-### About
-This project was created in order to find candidates for causitive mutations that suppress hypersensitivity to DNA damaging agents in the DIM5 knockout strain of Neurospora Crassa
+## About
+This project was created as an analysis pipeline to locate causitive suppressor mutations in the model organism Neurospora crassa.
 
 ### setup project
-clone the github repository into a directory called `ESSENTIAL`
+To use this pipeline on your own data, or to recreate the findings out our study,
+start by cloning this repository into a directory called `ESSENTIAL`
 
 ```
 mkdir {desired working directory}
@@ -45,33 +46,28 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 
 
 ### Prepare environment
-1. add fastq files to `ESSENTIAL/FASTQ`
-	- follow naming conventions specified in `ESSENTIAL/FASTQ/naming_conventions.txt`
+1. add fastq files to the directory `{path to working directory}/ESSENTIAL/FASTQ`
+	- follow naming conventions specified in `{path to working directory}/ESSENTIAL/FASTQ/naming_conventions.txt`
 	- fastq files must be gzip-ed
-2. specify reference parent and divergent parent filenames in the `ESSENTIAL/FASTQ/parents.txt`
-3. edit `ESSENTIAL/SCRIPTS/010.check_data.sh` to run proper fastq error correction script
-	- this git repo contains scripts for paired end and single end datasets
-	- if using paired end data, remove the `#` pound sign comment before `$FILES/012.lighter_paired_end.sh`
-	- if using single end data, remove the `#` pound sign comment before `$FILES/012.lighter_single_end.sh`
-	- ensure the alternate script you are not running is commented out with a `#`
-3. edit `ESSENTIAL/SCRIPTS/020.compare_data_to_genomes.sh` to run proper mapping script
-	- this git repo contains scripts for mapping paired end and single end reads
-	- if running paired end script, remove the `#` pound sign comment before `$FILES/021.paired_end_map_to_OR.sh`
-		- also, edit the min and max fragment size parameters in the `ESSENTIAL/SCRIPTS/021.paired_end_map_to_OR.sh` file for the bowtie2 command (line 65)
-	- if running single end script, remove the `#` pound sign comment before `$FILES/021.single_end_map_to_OR.sh`
-	- ensure the alternate script you are not running is commented out with a `#`
+2. specify reference parent and divergent parent filenames in the `{path to working directory}/ESSENTIAL/FASTQ/parents.txt` file
+3. edit `{path to working directory}/ESSENTIAL/SCRIPTS/010.check_data.sh` to specify single-end or paired-end reads
+	- if using paired end data, remove the `#` comment before `$FILES/012.lighter_paired_end.sh`
+	- if using single end data, remove the `#` comment before `$FILES/012.lighter_single_end.sh`
+3. edit `{path to working directory}/ESSENTIAL/SCRIPTS/020.compare_data_to_genomes.sh` to specify single-end or paired-end reads
+	- if running paired end script, remove the `#` comment before `$FILES/021.paired_end_map_to_OR.sh`
+		- also, edit the min and max fragment size of the input library in the `ESSENTIAL/SCRIPTS/021.paired_end_map_to_OR.sh` file for the bowtie2 mapping command (line 65)
+	- if running single end script, remove the `#` comment before `$FILES/021.single_end_map_to_OR.sh`
 
 ### steps to run
-1. run `ESSENTIAL/SCRIPTS/001.master.sh`
-2. graph output data from snp mapping located in `SNP_MAPPING/PARSED_SNP_INFO`
-	- make a scatter plot of RATIO ~ KB for each CONTIG, locate regions of interest
-3. list your regions of interest in .bed format files in the `ESSENTIAL/FILTER_SITES` directory
-	- follow guidelines listed in the `readme.txt` file in that folder
-4. run `ESSENTIAL/SCRIPTS/002.master.sh`
-	- obtain output in `GFF_OVERLAP` and `GFF_OVERLAP/TRANSLATE_CDS` folders
-	- `GFF_OVERLAP/*.all` lists all GFF features that high quality snps overlap
+1. run `{path to working directory}/ESSENTIAL/SCRIPTS/001.master.sh`
+2. evaluate scatterplots in `{path to working directory}/SNP_MAPPING/PARSED_SNP_INFO/GRAPHS` and locate regions that satisfy desired similarity thresholds
+3. list your regions of interest in .bed format files in the `{path to working directory}/ESSENTIAL/FILTER_SITES` directory
+	- follow guidelines listed in the `{path to working directory}/ESSENTIAL/FILTER_SITES\readme.txt` file
+4. run `{path to working directory}/ESSENTIAL/SCRIPTS/002.master.sh`
+	- obtain output in `{path to working directory}/GFF_OVERLAP` and `{path to working directory}/GFF_OVERLAP/TRANSLATE_CDS` folders
+	- `{path to working directory}/GFF_OVERLAP/*.all` lists all GFF features that high quality snps overlap
 		- format: {full GFF entry}{full vcf entry for snp}
-	- `GFF_OVERLAP/*.snps_not_in_genes` lists all snps that fall in euchromatin regions but do not overlap any GFF features
+	- `{path to working directory}/GFF_OVERLAP/*.snps_not_in_genes` lists all snps that fall in euchromatin regions but do not overlap any GFF features
 		- these may hit promotors or other factors outside the gene body, and may be of interest if a mutation is not found in the GFF features
-	- `GFF_OVERLAP/TRANSLATE_CDS/*.translated_CDS` outputs the translated AA sequence for all snps falling in coding sequences, and shows if the snp produces a non-synonymous output
-	- `SV_DETECTION` contains BreakDancer and Pindel output to detect possible structural variants
+	- `{path to working directory}/GFF_OVERLAP/TRANSLATE_CDS/*.translated_CDS` outputs the translated AA sequence for all snps falling in coding sequences, and shows if the snp produces a non-synonymous output
+	- `{path to working directory}/SV_DETECTION` contains BreakDancer and Pindel output to detect possible structural variants
