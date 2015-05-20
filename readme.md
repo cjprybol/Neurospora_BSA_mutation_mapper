@@ -57,9 +57,9 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 	- follow guidelines listed in the `{path to working directory}/ESSENTIAL/FILTER_SITES/readme.txt` file
 4. run `{path to working directory}/ESSENTIAL/SCRIPTS/002.master.sh`
 	- obtain output in `{path to working directory}/GFF_OVERLAP` and `{path to working directory}/GFF_OVERLAP/TRANSLATE_CDS` folders
-	- `{path to working directory}/GFF_OVERLAP/*.all` lists all GFF features that high quality snps overlap
-		- format: {full GFF entry}{full vcf entry for snp}
-	- `{path to working directory}/GFF_OVERLAP/*.snps_not_in_genes` lists all snps that fall in euchromatin regions but do not overlap any GFF features
-		- these may hit promotors or other factors outside the gene body, and may be of interest if a mutation is not found in the GFF features
-	- `{path to working directory}/GFF_OVERLAP/TRANSLATE_CDS/*.translated_CDS` outputs the translated AA sequence for all snps falling in coding sequences, and shows if the snp produces a non-synonymous output
-	- `{path to working directory}/SV_DETECTION` contains BreakDancer and Pindel output to detect possible structural variants
+		- `{path to working directory}/GFF_OVERLAP/*.all` lists all GFF features that high quality snps overlap
+			- format: {full GFF entry}{full vcf entry for snp}
+		- `{path to working directory}/GFF_OVERLAP/*.snps_not_in_genes` lists all snps that fall in euchromatin regions but do not overlap any GFF features
+			- these may hit promotors or other factors outside the gene body, and may be of interest if a mutation is not found in the GFF features
+		- `{path to working directory}/GFF_OVERLAP/TRANSLATE_CDS/*.translated_CDS` outputs the translated AA sequence for all snps falling in coding sequences, and shows if the snp produces a non-synonymous output
+		- `{path to working directory}/SV_DETECTION` contains BreakDancer and Pindel output to detect possible structural variants
