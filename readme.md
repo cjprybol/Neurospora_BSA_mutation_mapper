@@ -1,7 +1,7 @@
-# Neurospora BSA mutation mapper
+# Neurospora bulk-segregant-analysis (BSA) mutation mapper
 ---
 
-## About
+## about
 This project was created as an analysis pipeline to locate causitive suppressor mutations in the model organism Neurospora crassa.
 
 ### setup project
@@ -44,7 +44,7 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 - [Pindel](http://gmt.genome.wustl.edu/packages/pindel/)
 
 
-### Prepare environment
+### prepare environment
 1. add fastq files to the directory `{path to working directory}/ESSENTIAL/FASTQ`
 	- follow naming conventions specified in `{path to working directory}/ESSENTIAL/FASTQ/naming_conventions.txt`
 	- fastq files must be gzip-ed
