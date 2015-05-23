@@ -10,3 +10,4 @@ FILES="$BASE/ESSENTIAL/SCRIPTS"
 
 $FILES/032.map_snps_for_samples.sh
 $FILES/033.parse_snp_data.sh
+$FILES/034.graph_snp_data.sh
