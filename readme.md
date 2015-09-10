@@ -33,6 +33,8 @@ git clone https://github.com/cprybol/DIM5_suppressor_mapping.git ESSENTIAL
 	- **packages**
 		- [ggplot2](http://ggplot2.org/)
 		- [gridExtra](http://cran.r-project.org/web/packages/gridExtra/index.html)
+		- [preprocessCore](https://www.bioconductor.org/packages/release/bioc/manuals/preprocessCore/man/preprocessCore.pdf)
+			- within [Bioconductor](https://www.bioconductor.org/)
 - [Samtools](http://www.htslib.org/)
 - [bcftools](http://www.htslib.org/)
 - [htslib](http://www.htslib.org/)
