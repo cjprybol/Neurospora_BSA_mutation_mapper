@@ -20,6 +20,9 @@ fi
 #	assign directory variable names
 ##############################################################
 
+CONFIG_FILE="$BASE/ESSENTIAL/config.txt"
+read_type="$( grep "^read-type:" $CONFIG_FILE | perl -pe 's/read-type://' )"
+
 
 for f in $FILES
 do
@@ -33,7 +36,18 @@ do
 	# i.e. find all reads (in -abam) that are not in -b, and write those to file (filter out regions in -b)
 	bedtools intersect -v -abam "$f" -b "$BASE/ESSENTIAL/HETEROCHROMATIN/Sorted_S1_H2K9me3_rseg_default_peaks.bed" > "$OUT_DIR/$out_file.bam.tmp"
 	# filter out unmapped reads
-	samtools view -bh -F 4 -q 10 "$OUT_DIR/$out_file.bam.tmp" | samtools sort - "$OUT_DIR/$out_file"
+
+	if [ "$read_type" == "se" ]; then
+
+		samtools view -bh -F 1796 -q 20 "$OUT_DIR/$out_file.bam.tmp" | samtools sort - "$OUT_DIR/$out_file"
+
+	elif [ "$read_type" == "pe" ]; then
+
+		samtools view -bh -F 1804 -q 20 "$OUT_DIR/$out_file.bam.tmp" | samtools sort - "$OUT_DIR/$out_file"
+
+	else
+		echo "read-type incorrectly specified in $BASE/ESSENTIAL/config.txt"
+	fi
 
 	rm "$OUT_DIR/$out_file.bam.tmp"
 
